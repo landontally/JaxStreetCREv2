@@ -1,284 +1,339 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
+	import { fly, fade } from 'svelte/transition';
 
-  // Grab all our dynamic data from the server
-  let { data } = $props();
-  
-  // Guarantee these variables are arrays so Svelte never crashes
-  let properties = data?.properties || [];
-  let heroImages = data?.heroImages || [];
+	let { data } = $props();
+	let properties = data?.properties || [];
+	let heroImages = data?.heroImages || [];
 
-  // --- HERO CAROUSEL LOGIC ---
-  let currentHeroIndex = $state(0);
+	// --- MOUSE TRACKING FOR GRID ---
+	let mouseX = $state(0);
+	let mouseY = $state(0);
 
-  onMount(() => {
-    // Safely check length before starting the interval
-    if (heroImages && heroImages.length > 1) {
-      const interval = setInterval(() => {
-        currentHeroIndex = (currentHeroIndex + 1) % heroImages.length;
-      }, 12000); 
-      return () => clearInterval(interval);
-    }
-  });
+	function handleMouseMove(e: MouseEvent) {
+		mouseX = e.clientX;
+		mouseY = e.clientY;
+	}
 
-  // --- PROPERTIES CAROUSEL LOGIC ---
-  let currentIndex = $state(0);
+	// --- HERO CAROUSEL LOGIC ---
+	let currentHeroIndex = $state(0);
+	onMount(() => {
+		if (heroImages && heroImages.length > 1) {
+			const interval = setInterval(() => {
+				currentHeroIndex = (currentHeroIndex + 1) % heroImages.length;
+			}, 8000); 
+			return () => clearInterval(interval);
+		}
+	});
 
-  function next() {
-    currentIndex = (currentIndex + 1) % properties.length;
-  }
+	// --- PROPERTIES CAROUSEL LOGIC ---
+	let currentIndex = $state(0);
+	let startX = 0;
+	let isDragging = $state(false);
+	let dragOffset = $state(0); 
 
-  function prev() {
-    currentIndex = (currentIndex - 1 + properties.length) % properties.length;
-  }
+	function next() {
+		currentIndex = (currentIndex + 1) % properties.length;
+	}
 
-  function getOffset(index: number) {
-    const length = properties.length;
-    let offset = (index - currentIndex) % length;
-    if (offset > Math.floor(length / 2)) offset -= length;
-    if (offset < -Math.floor(length / 2)) offset += length;
-    return offset;
-  }
+	function prev() {
+		currentIndex = (currentIndex - 1 + properties.length) % properties.length;
+	}
 
-  let startX = 0;
-  let isDragging = false;
+	function getOffset(index: number) {
+		const length = properties.length;
+		let offset = (index - currentIndex) % length;
+		if (offset > Math.floor(length / 2)) offset -= length;
+		if (offset < -Math.floor(length / 2)) offset += length;
+		return offset;
+	}
 
-  function handlePointerDown(e: PointerEvent) {
-    isDragging = true;
-    startX = e.clientX;
-  }
+	function handlePointerDown(e: PointerEvent) {
+		isDragging = true;
+		startX = e.clientX;
+		(e.target as HTMLElement).setPointerCapture(e.pointerId);
+	}
 
-  function handlePointerUp(e: PointerEvent) {
-    if (!isDragging) return;
-    const diff = e.clientX - startX;
-    
-    if (diff > 50) {
-      prev();
-    } else if (diff < -50) {
-      next();
-    }
-    isDragging = false;
-  }
+	function handlePointerMove(e: PointerEvent) {
+		if (!isDragging) return;
+		dragOffset = e.clientX - startX;
+	}
 
-  function handlePointerLeave() {
-    isDragging = false;
-  }
+	function handlePointerUp(e: PointerEvent) {
+		if (!isDragging) return;
+		
+		if (dragOffset > 75) {
+			prev();
+		} else if (dragOffset < -75) {
+			next();
+		}
+		
+		isDragging = false;
+		dragOffset = 0;
+		(e.target as HTMLElement).releasePointerCapture(e.pointerId);
+	}
+
+	// --- CUSTOM REVEAL ACTION ---
+	function reveal(node: HTMLElement) {
+		node.classList.add('opacity-0', 'translate-y-16', 'transition-all', 'duration-[1200ms]', 'ease-out');
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					node.classList.remove('opacity-0', 'translate-y-16');
+					node.classList.add('opacity-100', 'translate-y-0', 'is-revealed');
+					observer.unobserve(node);
+				}
+			});
+		}, { threshold: 0.15 });
+
+		observer.observe(node);
+		return { destroy() { observer.disconnect(); } };
+	}
 </script>
 
+<svelte:window onmousemove={handleMouseMove} />
+
 <svelte:head>
-  <title>Jax Street CRE | Commercial Real Estate</title>
+	<title>Jax Street CRE | Indiana Commercial Real Estate</title>
+	<meta name="description" content="Jax Street CRE is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
 </svelte:head>
 
-<section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-  
-  {#each heroImages as img, i}
-    <div 
-      class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[2000ms] ease-in-out"
-      style="background-image: url('{img}'); opacity: {i === currentHeroIndex ? 1 : 0};"
-    ></div>
-  {/each}
+<div class="bg-zinc-950 min-h-screen text-white selection:bg-teal-500 overflow-hidden">
+	
+	<section class="relative h-screen flex flex-col justify-center px-6 md:px-12 z-10 overflow-hidden bg-zinc-950">
+		
+		<div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+			<div class="absolute inset-0 opacity-[0.15]" 
+				 style="background-image: linear-gradient(to right, #71717a 1px, transparent 1px), linear-gradient(to bottom, #71717a 1px, transparent 1px); background-size: 60px 60px;">
+			</div>
+			<div class="absolute inset-0 transition-opacity duration-300 ease-out" 
+				 style="background: radial-gradient(800px circle at {mouseX}px {mouseY}px, rgba(20, 184, 166, 0.15), transparent 40%);">
+			</div>
+		</div>
 
-  <div class="absolute inset-0 z-10 bg-gradient-to-b from-zinc-950/80 via-zinc-950/40 to-zinc-950"></div>
-  
-  <div class="relative z-20 w-full max-w-7xl mx-auto px-6 flex flex-col items-start mt-12 md:mt-0">
-    <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-zinc-50 leading-tight max-w-4xl mb-6 drop-shadow-lg">
-      Structure. Vision.<br/>
-      <span class="text-zinc-300">Execution.</span>
-    </h1>
-    <p class="text-lg md:text-xl text-zinc-200 max-w-2xl mb-10 leading-relaxed drop-shadow-md font-medium">
-      Rooted in Indiana commercial real estate, we are hands-on owners specializing in retail and light industrial properties. We don't just lease space - we partner with our tenants for long-term success.
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4">
-      <a href="/properties" class="bg-teal-600 hover:bg-teal-500 text-zinc-50 font-semibold py-4 px-8 rounded-sm transition-colors duration-300 text-center shadow-lg">
-        View Properties
-      </a>
-      <a href="/about" class="bg-transparent border border-zinc-300 hover:bg-zinc-800/80 text-zinc-50 font-semibold py-4 px-8 rounded-sm transition-all duration-300 text-center shadow-lg">
-        Our Story
-      </a>
-    </div>
-  </div>
-</section>
+		{#each heroImages as img, i}
+			<div 
+				class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[2000ms] ease-in-out opacity-40 mix-blend-luminosity"
+				style="background-image: url('{img}'); opacity: {i === currentHeroIndex ? 0.4 : 0};"
+			></div>
+		{/each}
+		<div class="absolute inset-0 z-10 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
+		
+		<div class="relative z-20 w-full max-w-7xl mx-auto flex flex-col items-start mt-20">
+			
+			<div use:reveal class="flex items-center gap-4 mb-8">
+				<div class="h-px w-12 bg-teal-500"></div>
+				<span class="text-teal-400 text-xs font-black uppercase tracking-[0.4em]">Indiana Commercial Real Estate</span>
+			</div>
 
-<section class="relative min-h-screen py-24 bg-zinc-950 flex flex-col justify-center border-t border-zinc-900 overflow-hidden">
-  
-  {#if properties.length > 0}
-    <div class="absolute inset-0 z-0 transition-all duration-1000 ease-in-out opacity-60">
-      <img 
-        src={properties[currentIndex]?.image} 
-        alt="Background Mood" 
-        class="w-full h-full object-cover blur-sm scale-110"
-      />
-      <div class="absolute inset-0 bg-zinc-950/60"></div>
-    </div>
+			<h1 class="text-6xl md:text-[8rem] lg:text-[10rem] font-bold tracking-tighter leading-[0.85] uppercase mb-8">
+				<span use:reveal class="block text-zinc-100">Structure.</span>
+				<span use:reveal class="block text-zinc-400">Vision.</span>
+				<span use:reveal class="block text-transparent webkit-text-stroke mt-2">Execution.</span>
+			</h1>
+			
+			<p use:reveal class="text-lg md:text-xl text-zinc-400 max-w-2xl mb-12 leading-relaxed font-light">
+				Rooted in Indiana commercial real estate, we are hands-on owners specializing in retail and light industrial properties. We partner with our tenants for long-term success.
+			</p>
+			
+			<div use:reveal class="flex flex-col sm:flex-row gap-6">
+				<a href="/properties/available" class="group relative bg-teal-600 hover:bg-teal-500 text-white font-bold uppercase tracking-widest text-xs py-5 px-10 rounded-sm transition-all duration-300 shadow-xl hover:shadow-teal-500/20 overflow-hidden">
+					<span class="relative z-10">View Properties</span>
+					<div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+				</a>
+				<a href="/about" class="bg-transparent border border-zinc-700 hover:border-zinc-300 hover:bg-zinc-800 text-white font-bold uppercase tracking-widest text-xs py-5 px-10 rounded-sm transition-all duration-300 text-center">
+					Our Story
+				</a>
+			</div>
+		</div>
 
-    <div class="relative z-10 w-full max-w-[1700px] mx-auto px-6 h-[80vh] flex flex-col">
-      <div class="text-center mb-16 flex flex-col items-center">
-        <div class="flex items-center justify-center gap-4 text-zinc-50 uppercase mb-6">
-          <div class="w-3.5 h-3.5 rounded-full bg-teal-400 animate-heartbeat"></div>
-          <h2 class="text-3xl md:text-5xl font-bold tracking-tight">Latest Properties</h2>
-        </div>
+		<div use:reveal class="absolute bottom-12 left-6 md:left-12 flex flex-col items-center gap-4 z-20">
+			<span class="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-500 rotate-180" style="writing-mode: vertical-rl;">Scroll</span>
+			<div class="w-px h-16 bg-gradient-to-b from-zinc-500 to-transparent"></div>
+		</div>
+	</section>
 
-        <div class="flex gap-2.5">
-          {#each properties as _, i}
-            <button 
-              onclick={() => currentIndex = i}
-              class="w-3 h-3 rounded-full transition-all duration-500 {i === currentIndex ? 'bg-zinc-50 w-7' : 'bg-zinc-600'}"
-              aria-label="Go to slide {i + 1}"
-            ></button>
-          {/each}
-        </div>
-      </div>
+	<section class="relative py-32 md:py-48 z-20 flex flex-col justify-center border-t border-white/5 bg-zinc-950 overflow-hidden">
+		
+		{#if properties.length > 0}
+			<div class="absolute inset-0 z-0 opacity-80">
+				{#key currentIndex}
+					<img 
+						src={properties[currentIndex]?.image} 
+						alt="" 
+            aria-hidden="true"
+						class="absolute inset-0 w-full h-full object-cover blur-lg scale-110"
+						in:fade={{ duration: 800 }}
+					/>
+				{/key}
+				<div class="absolute inset-0 bg-zinc-950/40"></div>
+			</div>
 
-      <div 
-        class="relative flex-grow flex items-center justify-center w-full cursor-grab active:cursor-grabbing touch-pan-y"
-        onpointerdown={handlePointerDown}
-        onpointerup={handlePointerUp}
-        onpointerleave={handlePointerLeave}
-        onpointercancel={handlePointerLeave}
-      >
-        {#each properties as property, i}
-          {@const offset = getOffset(i)}
-          
-          <div 
-            class="absolute h-full flex flex-col justify-center transition-all duration-700 ease-out"
-            style="
-              transform: translateX({offset * 125}%); 
-              opacity: {offset === 0 ? 1 : 0.25}; 
-              scale: {offset === 0 ? 1.05 : 0.7}; 
-              z-index: {offset === 0 ? 20 : 10};
-              pointer-events: {offset === 0 ? 'auto' : 'none'};
-              width: {offset === 0 ? '75vw' : '55vw'};
-              max-width: {offset === 0 ? '900px' : '750px'};
-            "
-          >
-            <div class="relative w-full aspect-[16/9] bg-zinc-900 overflow-hidden rounded-sm shadow-2xl border border-zinc-800">
-              <img draggable="false" src={property.image} alt={property.title} class="w-full h-full object-cover select-none" />
-              
-              <div class="absolute top-6 left-6 max-w-[85%] bg-black/60 backdrop-blur-md border border-white/10 p-4 md:p-5 rounded-sm z-20">
-                <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold text-zinc-50 leading-tight mb-2">
-                  {property.title}
-                </h3>
-                <p class="text-teal-400 font-medium text-sm md:text-base flex items-center gap-1.5">
-                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                  {property.location}
-                </p>
-              </div>
+			<div class="relative z-10 w-full max-w-[1800px] mx-auto px-6 h-[70vh] flex flex-col">
+				
+				<div use:reveal class="text-center mb-16 flex flex-col items-center">
+					<div class="flex items-center gap-4 mb-6">
+						<div class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
+						<span class="text-teal-400 text-xs font-black uppercase tracking-[0.3em]">Market Highlights</span>
+					</div>
+					<h2 class="text-4xl md:text-6xl font-bold tracking-tight text-white drop-shadow-md">Featured Portfolio</h2>
+				</div>
 
-              <div class="absolute bottom-6 right-6 border border-zinc-50 text-zinc-50 backdrop-blur-md bg-black/30 text-sm font-semibold uppercase tracking-widest px-4 py-2 rounded-full">
-                {property.status}
-              </div>
-            </div>
+				<div 
+					class="relative flex-grow flex items-center justify-center w-full cursor-grab active:cursor-grabbing touch-none"
+					onpointerdown={handlePointerDown}
+					onpointermove={handlePointerMove}
+					onpointerup={handlePointerUp}
+					onpointercancel={handlePointerUp}
+				>
+					{#each properties as property, i}
+						{@const offset = getOffset(i)}
+						
+						<div 
+							class="absolute h-full flex flex-col justify-center select-none"
+							style="
+								transform: translateX(calc({offset * 115}% + {dragOffset}px)); 
+								opacity: {offset === 0 ? 1 : 0.3}; 
+								scale: {offset === 0 ? 1 : 0.8}; 
+								z-index: {offset === 0 ? 20 : 10};
+								pointer-events: {offset === 0 ? 'auto' : 'none'};
+								width: {offset === 0 ? 'max(75vw, 85vw)' : 'max(55vw, 65vw)'}; 
+								max-width: {offset === 0 ? '1000px' : '750px'};
+								transition: {isDragging ? 'none' : 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'};
+							"
+						>
+							<div class="relative w-full aspect-square sm:aspect-[16/9] md:aspect-[21/9] bg-zinc-900 overflow-hidden rounded-sm ring-1 ring-white/10 shadow-2xl">
+								<img draggable="false" src={property.image} alt={property.title} class="w-full h-full object-cover grayscale opacity-80 {offset === 0 ? 'grayscale-0 opacity-100' : ''} transition-all duration-1000" />
+								
+								<div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent opacity-90"></div>
+								
+								<div class="absolute bottom-0 left-0 w-full p-4 sm:p-6 md:p-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+									<div class="flex-grow">
+										<span class="inline-block bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm mb-2 sm:mb-4 backdrop-blur-md">
+											{property.status}
+										</span>
+										<h3 class="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-tight mb-1 sm:mb-2 line-clamp-2">
+											{property.title}
+										</h3>
+										<p class="text-zinc-300 font-medium text-sm sm:text-base flex items-center gap-2">
+											<svg class="w-4 h-4 text-teal-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+											<span class="truncate">{property.location}</span>
+										</p>
+									</div>
+									
+									<a href="/properties/{property.slug}" onclick={(e) => { if(isDragging) e.preventDefault(); e.stopPropagation(); }} class="shrink-0 flex justify-center items-center gap-4 group/btn bg-white/10 hover:bg-white border border-white/20 hover:border-white backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-sm transition-all duration-300 cursor-pointer mt-2 md:mt-0">
+										<span class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white group-hover/btn:text-zinc-950 transition-colors">View Listing</span>
+										<div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-teal-500 text-white flex items-center justify-center group-hover/btn:bg-zinc-950 transition-colors">
+											<svg class="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+										</div>
+									</a>
+								</div>
+							</div>
+						</div>
+					{/each}
+				</div>
 
-            <div class="flex justify-between items-center mt-6 px-2">
-              <a href="/properties/{property.slug}" onclick={(e) => e.stopPropagation()} class="flex items-center gap-2 text-zinc-50 font-bold hover:text-teal-400 transition-colors group">
-                <div class="w-6 h-6 rounded-full bg-zinc-50 text-zinc-950 flex items-center justify-center group-hover:bg-teal-400 group-hover:scale-110 group-hover:translate-x-1.5 transition-all duration-300">
-                  <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                </div>
-              </a>
-              <span class="text-zinc-300 font-medium">{property.type}</span>
-            </div>
-          </div>
-        {/each}
+				<div class="flex justify-center gap-3 mt-12">
+					{#each properties as _, i}
+						<button 
+							onclick={() => currentIndex = i}
+							class="h-1.5 rounded-full transition-all duration-500 shadow-md {i === currentIndex ? 'bg-teal-500 w-8' : 'bg-zinc-400 w-2 hover:bg-zinc-200'}"
+							aria-label="Go to slide {i + 1}"
+						></button>
+					{/each}
+				</div>
+			</div>
+		{:else}
+			<div class="text-center py-32 text-zinc-500">Building Our Portfolio...</div>
+		{/if}
+	</section>
 
-        {#if properties.length > 1}
-          <button onclick={(e) => { e.stopPropagation(); prev(); }} class="absolute left-2 md:left-[5%] z-30 w-12 h-12 rounded-full bg-white text-zinc-950 flex items-center justify-center hover:scale-110 transition-transform shadow-xl">            
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
-          </button>
-          <button onclick={(e) => { e.stopPropagation(); next(); }} class="absolute right-2 md:right-[5%] z-30 w-12 h-12 rounded-full bg-white text-zinc-950 flex items-center justify-center hover:scale-110 transition-transform shadow-xl">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-          </button>
-        {/if}
-      </div>
-    </div>
+	<section class="py-32 md:py-48 px-6 border-t border-zinc-200 bg-white relative z-20 flex items-center justify-center min-h-[80vh] overflow-hidden">
+		
+		<div use:reveal class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center opacity-[0.35]">
+			<svg class="w-full h-full min-w-[1200px] max-w-none" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+				
+				<rect x="100" y="100" width="1000" height="600" stroke="#e4e4e7" stroke-width="1.5" class="path-draw path-delay-1" />
+				<rect x="150" y="150" width="900" height="500" stroke="#14b8a6" stroke-width="2" stroke-dasharray="10 10" class="path-draw path-delay-2" />
+				
+				<line x1="100" y1="100" x2="1100" y2="700" stroke="#e4e4e7" stroke-width="1.5" class="path-draw path-delay-3" />
+				<line x1="1100" y1="100" x2="100" y2="700" stroke="#e4e4e7" stroke-width="1.5" class="path-draw path-delay-4" />
+				
+				<circle cx="600" cy="400" r="250" stroke="#e4e4e7" stroke-width="1.5" class="path-draw path-delay-5" />
+				<circle cx="600" cy="400" r="150" stroke="#14b8a6" stroke-width="1.5" class="path-draw path-delay-6" />
+				
+				<line x1="600" y1="0" x2="600" y2="800" stroke="#e4e4e7" stroke-width="1.5" stroke-dasharray="4 8" class="path-draw path-delay-5" />
+				<line x1="0" y1="400" x2="1200" y2="400" stroke="#e4e4e7" stroke-width="1.5" stroke-dasharray="4 8" class="path-draw path-delay-5" />
+			</svg>
+		</div>
 
-  {:else}
-    <div class="relative z-10 w-full max-w-3xl mx-auto px-6 h-[50vh] flex flex-col items-center justify-center text-center">
-      <div class="w-16 h-16 rounded-full border border-dashed border-zinc-700 flex items-center justify-center mb-6">
-        <svg class="w-6 h-6 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-      </div>
-      <h2 class="text-2xl font-bold text-zinc-50 mb-2">Building Our Portfolio</h2>
-      <p class="text-zinc-400">Featured properties will appear here once they are added and marked as "Featured" in Sanity Studio.</p>
-    </div>
-  {/if}
+		<div class="max-w-4xl mx-auto text-center flex flex-col items-center relative z-10">
+			
+			<div use:reveal class="flex items-center gap-4 mb-10">
+				<div class="h-px w-12 bg-teal-500"></div>
+				<span class="text-teal-600 text-xs font-black uppercase tracking-[0.4em]">About Us</span>
+				<div class="h-px w-12 bg-teal-500"></div>
+			</div>
 
-</section>
+			<h2 use:reveal class="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.1] mb-10 text-zinc-950">
+				<span class="block md:inline whitespace-nowrap">Operating high demand</span>
+				<span class="text-transparent webkit-text-stroke-dark inline-block">real estate</span><br/>
+				and treating our tenants <span class="text-teal-600 italic font-light inline-block">like family.</span>
+			</h2>
+			
+			<p use:reveal class="text-lg md:text-xl text-zinc-600 font-medium leading-relaxed max-w-2xl mb-12">
+				At Jax Street CRE, we start with our tenants and work our way backwards. This means that our buildings must setup our tenants for long-term success. We believe that charging our tenants a rent that makes sense and operating our buildings to a high standard is the goal.
+			</p>
+			
+			<a use:reveal href="/about" class="group flex items-center gap-4 bg-transparent border-2 border-zinc-950 text-zinc-950 px-10 py-5 rounded-sm hover:bg-zinc-950 hover:text-white transition-all duration-300">
+				<span class="text-xs font-bold uppercase tracking-[0.2em]">Discover Our Story</span>
+				<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+			</a>
+		</div>
+	</section>
 
-<section class="py-24 bg-white border-t border-zinc-200 relative flex items-center">
-  
-  <div class="absolute inset-0 z-0 bg-grain opacity-[0.03]"></div>
-  
-  <div class="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12 md:gap-20">
-    
-    <div class="w-full md:w-1/2 flex items-center justify-center aspect-square md:aspect-auto">
-      <div class="relative w-[300px] h-[300px] lg:w-[400px] lg:h-[400px] flex items-center justify-center">
-        
-        <div class="relative w-1/2 h-1/2 rounded-full bg-zinc-950 flex items-center justify-center shadow-xl z-20">
-          <div class="w-6 h-6 bg-zinc-50 rounded-full"></div>
-          <span class="absolute text-[10px] md:text-xs text-zinc-50 font-bold uppercase tracking-wider bottom-1/4"></span>
-        </div>
-        
-        <div class="absolute inset-0 rounded-full border border-teal-600/40 animate-orbit-a"></div>
-        <div class="absolute inset-[15%] rounded-full border border-dashed border-teal-600/60 animate-orbit-b"></div>
-        <div class="absolute inset-[30%] rounded-full border border-teal-600/40 animate-orbit-c"></div>
-        <div class="absolute inset-[-10%] rounded-full border border-zinc-600/10 scale-[1.1]"></div>
-      </div>
-    </div>
-    
-    <div class="w-full md:w-1/2 flex flex-col gap-6">
-      
-      <div>
-        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-950 leading-tight mb-8 max-w-xl">
-          Our Philosophy
-        </h2>
-        
-        <blockquote class="text-lg md:text-xl text-teal-600 font-medium italic mb-6 border-l-4 border-teal-600 pl-4">
-          "Operate high demand real estate and treat our tenants like family."
-        </blockquote>
-
-        <p class="text-zinc-700 max-w-lg mb-8 leading-relaxed text-sm md:text-base">
-          At Jax Street CRE, we like to start with our tenants, and work our way backwards. This means our buildings must set up our tenants for long-term success. That's why buying real estate correctly is crucial: "no Landlord has ever had a pleasant experience charging their tenant more rent than they can afford." So, our long-term mission is to buy high demand real estate, charge our tenants a rent that makes sense, and operate our buildings at a high standard.
-        </p>
-      </div>
-
-      <a href="/about" class="self-start text-teal-600 hover:text-teal-700 font-bold flex items-center gap-2.5 group transition-colors mt-4">
-        Discover Our Story
-        <div class="w-7 h-7 rounded-full bg-teal-600 text-white flex items-center justify-center group-hover:bg-teal-500 group-hover:scale-110 group-hover:translate-x-1.5 transition-all duration-300">
-          <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-        </div>
-      </a>
-    </div>
-
-  </div>
-</section>
+</div>
 
 <style>
-  @media (prefers-reduced-motion: no-preference) {
-    .animate-heartbeat {
-      animation: heartbeat 4s ease-in-out infinite; 
-    }
-  }
+	/* Custom class for outline text on dark backgrounds */
+	.webkit-text-stroke {
+		-webkit-text-stroke: 2px #f4f4f5; /* zinc-100 */
+		color: transparent;
+	}
 
-  @keyframes heartbeat {
-    0% { transform: scale(1); opacity: 0.6; }
-    30% { transform: scale(1.4); opacity: 1; }
-    50% { transform: scale(1); opacity: 0.6; }
-    80% { transform: scale(1.4); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.6; }
-  }
+	/* Custom class for outline text on white backgrounds */
+	.webkit-text-stroke-dark {
+		-webkit-text-stroke: 2px #09090b; /* zinc-950 */
+		color: transparent;
+	}
 
-  @media (prefers-reduced-motion: no-preference) {
-    .animate-orbit-a { animation: rotate 20s linear infinite; }
-    .animate-orbit-b { animation: rotate-reverse 15s linear infinite; }
-    .animate-orbit-c { animation: rotate 10s linear infinite; }
-  }
+	.webkit-text-stroke-light {
+		-webkit-text-stroke: 2px #e4e4e7; /* zinc-200 */
+		color: transparent;
+	}
 
-  @keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+	@keyframes shimmer {
+		100% { transform: translateX(100%); }
+	}
 
-  @keyframes rotate-reverse {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(-360deg); }
-  }
+	/* --- SVG BLUEPRINT DRAWING ANIMATIONS --- */
+	.path-draw {
+		stroke-dasharray: 4000;
+		stroke-dashoffset: 4000;
+	}
+	
+	:global(.is-revealed) .path-draw {
+		animation: drawBlueprint 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	}
+
+	.path-delay-1 { animation-delay: 0.1s; }
+	.path-delay-2 { animation-delay: 0.4s; }
+	.path-delay-3 { animation-delay: 0.7s; }
+	.path-delay-4 { animation-delay: 0.9s; }
+	.path-delay-5 { animation-delay: 1.2s; }
+	.path-delay-6 { animation-delay: 1.5s; }
+
+	@keyframes drawBlueprint {
+		to { stroke-dashoffset: 0; }
+	}
 </style>

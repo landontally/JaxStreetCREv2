@@ -2,13 +2,14 @@
   import { onMount } from 'svelte';
   import 'leaflet/dist/leaflet.css';
 
-  let { propertyCoords, surroundingArea = [], directoryProperties = [], activeLocation, propertyTitle } = $props();
+  // Added `properties = []` to catch the prop passed from the Available/Leased pages
+  let { propertyCoords, surroundingArea = [], directoryProperties = [], properties = [], activeLocation, propertyTitle } = $props();
   
   let mapElement: HTMLElement;
   let map = $state<any>(null);
   let markers = $state<any>({});
   let L: any;
-  let defaultBounds = $state<any>(null); // Stores the perfect camera angle to see all pins
+  let defaultBounds = $state<any>(null);
 
   onMount(async () => {
     L = (await import('leaflet')).default;
@@ -37,9 +38,12 @@
 
     let featureGroupArray: any[] = [];
 
+    // Combine arrays to make it foolproof regardless of what the parent page calls it
+    let dirProps = directoryProperties.length > 0 ? directoryProperties : properties;
+
     // --- DIRECTORY MODE (Multiple Properties) ---
-    if (directoryProperties.length > 0) {
-      directoryProperties.forEach((prop: any) => {
+    if (dirProps.length > 0) {
+      dirProps.forEach((prop: any) => {
         if (prop.coordinates?.lat && prop.coordinates?.lng) {
           const marker = L.marker([prop.coordinates.lat, prop.coordinates.lng], { icon: mainIcon }).addTo(m)
             .bindPopup(`
@@ -88,24 +92,35 @@
     return () => { if (map) map.remove(); };
   });
 
-// --- THE FLIGHT ANIMATION ---
+  // --- THE FLIGHT ANIMATION ---
   $effect(() => {
     if (map) {
-      // Check if activeLocation has coordinates
-      if (activeLocation && activeLocation.coordinates) {
-        map.flyTo([activeLocation.coordinates.lat, activeLocation.coordinates.lng], 17, { animate: true, duration: 1.5 });
-        
-        // Open the popup using the slug
-        if (markers[activeLocation.slug]) {
-          markers[activeLocation.slug].openPopup();
+      if (activeLocation) {
+        // Determine the target coordinates
+        const lat = activeLocation.coordinates?.lat || activeLocation.lat;
+        const lng = activeLocation.coordinates?.lng || activeLocation.lng;
+
+        if (lat && lng) {
+          map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
+
+          // Try to open the popup using slug (properties) or name (businesses)
+          const identifier = activeLocation.slug || activeLocation.name || 'main';
+          if (markers[identifier]) {
+            markers[identifier].openPopup();
+          }
         }
       } else {
-        // RESET: Zoom back out to see all properties.
-        if (directoryProperties.length > 0 && defaultBounds) {
+        // RESET logic
+        let dirProps = directoryProperties.length > 0 ? directoryProperties : properties;
+        
+        if (dirProps.length > 0 && defaultBounds) {
           map.flyToBounds(defaultBounds, { padding: [50, 50], maxZoom: 15, animate: true, duration: 1.5 });
           map.closePopup();
         } else if (propertyCoords) {
-          map.flyTo([propertyCoords.lat, propertyCoords.lng], 13, { animate: true, duration: 1.5 });
+          map.flyTo([propertyCoords.lat, propertyCoords.lng], 13, {
+            animate: true,
+            duration: 1.5
+          });
           if (markers['main']) markers['main'].openPopup();
         }
       }

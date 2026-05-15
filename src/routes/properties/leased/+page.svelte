@@ -9,18 +9,18 @@
 </script>
 
 <svelte:head>
-	<title>Available Properties | Jax Street CRE</title>
-	<meta name="description" content="Browse our portfolio of available retail and light industrial properties in Indiana." />
+	<title>Leased Properties | Jax Street CRE</title>
+	<meta name="description" content="Browse our portfolio of fully leased retail and light industrial properties in Indiana." />
 </svelte:head>
 
 <div class="bg-white min-h-screen text-zinc-950 flex flex-col overflow-hidden">
 	
-<div class="w-full border-b border-zinc-800 bg-zinc-950 relative overflow-hidden px-6 md:px-12 pt-24 pb-8 shrink-0">		
-	<div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+	<div class="w-full border-b border-zinc-800 bg-zinc-950 relative overflow-hidden px-6 md:px-12 pt-24 pb-8 shrink-0">
+		<div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
 			<div>
-				<span class="text-teal-500 text-[10px] font-black uppercase tracking-[0.4em] block mb-2">Active Listings</span>
+				<span class="text-teal-500 text-[10px] font-black uppercase tracking-[0.4em] block mb-2">Fully Leased</span>
 				<h1 class="text-3xl md:text-5xl font-bold tracking-tighter uppercase flex flex-col sm:flex-row sm:gap-3 text-white">
-					Available <span>Properties.</span>
+					Leased <span>Properties.</span>
 				</h1>
 			</div>
 			<div class="flex items-center gap-3">
@@ -84,7 +84,7 @@
 			{:else}
 				<div class="h-full flex flex-col items-center justify-center text-center opacity-70 p-6">
 					<svg class="w-10 h-10 text-zinc-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-					<p class="text-zinc-500 font-medium">No properties currently available.</p>
+					<p class="text-zinc-500 font-medium">No leased properties to display at this time.</p>
 				</div>
 			{/if}
 
