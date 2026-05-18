@@ -93,6 +93,7 @@
 
 <svelte:head>
 	<title>About Us | Jax Street CRE</title>
+	<meta name="description" content="Founded by Eric Kamen and Landon Tally, Jax Street CRE is an Indiana-based commercial real estate firm focused on retail and light industrial properties." />
 </svelte:head>
 
 <div class="fixed inset-0 z-0 pointer-events-none bg-zinc-950">
@@ -141,7 +142,15 @@
 
 	<section bind:this={textSection} class="relative py-40 bg-white text-zinc-950 border-y border-zinc-200">
 		<div class="max-w-7xl mx-auto px-6 md:px-12">
-			<div class="flex flex-col text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
+			
+			<p 
+				class="md:hidden text-4xl font-bold tracking-tight leading-[1.2]"
+				style="background: linear-gradient(to right, #09090b {revealProgress * 100}%, #e4e4e7 {revealProgress * 100}%); -webkit-background-clip: text; color: transparent;"
+			>
+				We focus on retail and light industrial properties in the markets we know best.
+			</p>
+
+			<div class="hidden md:flex flex-col md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
 				<span 
 					class="w-fit"
 					style="background: linear-gradient(to right, #09090b {p1}%, #e4e4e7 {p1}%); -webkit-background-clip: text; color: transparent;"

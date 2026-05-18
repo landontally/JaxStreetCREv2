@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	import InteractiveMap from '$lib/components/InteractiveMap.svelte';
 
 	let { data } = $props();
@@ -6,6 +7,18 @@
 
 	// State to handle clicking "Focus Map" on a specific property
 	let activeLocation = $state<any>(null);
+	
+	// State for the mobile map modal
+	let isMobileMapOpen = $state(false);
+
+	// Lock background scrolling when the mobile map is open
+	$effect(() => {
+		if (isMobileMapOpen) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = 'auto';
+		}
+	});
 </script>
 
 <svelte:head>
@@ -13,10 +26,10 @@
 	<meta name="description" content="Browse our portfolio of available retail and light industrial properties in Indiana." />
 </svelte:head>
 
-<div class="bg-white min-h-screen text-zinc-950 flex flex-col overflow-hidden">
+<div class="bg-white min-h-screen text-zinc-950 flex flex-col overflow-hidden relative">
 	
-<div class="w-full border-b border-zinc-800 bg-zinc-950 relative overflow-hidden px-6 md:px-12 pt-24 pb-8 shrink-0">		
-	<div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+	<div class="w-full border-b border-zinc-800 bg-zinc-950 relative overflow-hidden px-6 md:px-12 pt-32 pb-8 shrink-0">
+		<div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
 			<div>
 				<span class="text-teal-500 text-[10px] font-black uppercase tracking-[0.4em] block mb-2">Active Listings</span>
 				<h1 class="text-3xl md:text-5xl font-bold tracking-tighter uppercase flex flex-col sm:flex-row sm:gap-3 text-white">
@@ -64,7 +77,10 @@
 							
 							<div class="flex items-center gap-4 mt-4 pt-3 border-t border-zinc-100">
 								<button 
-									onclick={() => activeLocation = property}
+									onclick={() => {
+										activeLocation = property;
+										if (window.innerWidth < 1024) isMobileMapOpen = true;
+									}}
 									class="text-[10px] font-bold uppercase text-zinc-500 hover:text-teal-600 transition-colors tracking-widest"
 								>
 									Focus Map
@@ -90,7 +106,7 @@
 
 		</div>
 
-		<div class="flex-grow h-[400px] lg:h-full bg-zinc-100 relative z-0 border-t lg:border-t-0 lg:border-l border-zinc-200">
+		<div class="hidden lg:block flex-grow h-full bg-zinc-100 relative z-0 border-l border-zinc-200">
 			<InteractiveMap 
 				properties={properties} 
 				activeLocation={activeLocation} 
@@ -98,6 +114,37 @@
 		</div>
 
 	</div>
+
+	<button 
+		class="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-950 text-white border border-zinc-700 font-bold uppercase tracking-widest text-[10px] px-8 py-4 rounded-full shadow-2xl z-40 flex items-center gap-2 hover:bg-zinc-800 transition-colors"
+		onclick={() => isMobileMapOpen = true}
+	>
+		<svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+		Map View
+	</button>
+
+	{#if isMobileMapOpen}
+		<div 
+			class="fixed inset-0 z-[100] bg-zinc-100 flex flex-col lg:hidden"
+			transition:fly={{ y: 800, duration: 350, opacity: 1 }}
+		>
+			<div class="bg-zinc-950 px-6 py-5 flex justify-between items-center shrink-0 border-b border-zinc-800 shadow-lg">
+				<span class="text-white font-bold uppercase tracking-widest text-xs">Property Map</span>
+				<button 
+					onclick={() => { isMobileMapOpen = false; activeLocation = null; }}
+					class="text-zinc-400 hover:text-white p-2 transition-colors"
+					aria-label="Close map"
+				>
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+				</button>
+			</div>
+			
+			<div class="flex-grow relative z-0">
+				<InteractiveMap properties={properties} activeLocation={activeLocation} />
+			</div>
+		</div>
+	{/if}
+
 </div>
 
 <style>

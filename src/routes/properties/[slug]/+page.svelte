@@ -214,6 +214,8 @@
 	</section>
 {/if}
 
+<svelte:window onkeydown={(e) => { if (e.key === 'Escape' && selectedImage) selectedImage = null; }} />
+
 {#if selectedImage}
 	<div 
 		class="fixed inset-0 z-[100] bg-zinc-950/95 backdrop-blur-md flex items-center justify-center p-4 md:p-12"
