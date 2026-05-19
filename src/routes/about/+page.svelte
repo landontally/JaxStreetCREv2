@@ -75,7 +75,7 @@
 	// --- TEAM ARRAY (Updated to use local static images) ---
 	const team = [
 		{
-			name: 'EK, MBA',
+			name: 'E, MBA',
 			role: 'Founder & Principal',
 			bio: "Replacement text for E's bio. This should be updated with the actual content that describes E's background, experience, and role at Jax Street CRE.",
 			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
