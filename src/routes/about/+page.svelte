@@ -76,8 +76,8 @@
 	const team = [
 		{
 			name: 'EK, MBA',
-			role: 'Founder & Principal (RE License #RB14050427)',
-			bio: "Eric's real estate career technically began upon graduating college in 2015, though, he has been around the business his entire life. Eric has gained insights, market knowledge, and valuable experience over the past eight years in the commercial real estate field, and he strives to continuously learn all facets of the business. Eric graduated from Indiana University’s Kelley School of Business and continued his educational journey by receiving an MBA through the Kelley School of Business in 2022.",
+			role: 'Founder & Principal',
+			bio: "Replacement text for Eric's bio. This should be updated with the actual content that describes Eric's background, experience, and role at Jax Street CRE.",
 			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
 			image: '/placeholder.jpg' 
 		},
