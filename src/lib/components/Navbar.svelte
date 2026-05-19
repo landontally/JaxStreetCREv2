@@ -124,7 +124,7 @@
           </div>
           <div>
             <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Email Us</p>
-            <a href="mailto:eric@jaxstreetcre.com" class="text-sm font-bold text-zinc-950 hover:text-teal-600 transition-colors">eric@jaxstreetcre.com</a>
+            <a href="mailto:e@email.com" class="text-sm font-bold text-zinc-950 hover:text-teal-600 transition-colors">e@email.com</a>
           </div>
         </div>
       </div>

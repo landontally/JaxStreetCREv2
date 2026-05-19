@@ -75,17 +75,17 @@
 	// --- TEAM ARRAY (Updated to use local static images) ---
 	const team = [
 		{
-			name: 'Eric K., MBA',
+			name: 'EK, MBA',
 			role: 'Founder & Principal (RE License #RB14050427)',
 			bio: "Eric's real estate career technically began upon graduating college in 2015, though, he has been around the business his entire life. Eric has gained insights, market knowledge, and valuable experience over the past eight years in the commercial real estate field, and he strives to continuously learn all facets of the business. Eric graduated from Indiana University’s Kelley School of Business and continued his educational journey by receiving an MBA through the Kelley School of Business in 2022.",
-			// Make sure 'eric-placeholder.jpg' is exactly what you named the file in your static folder
+			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
 			image: '/placeholder.jpg' 
 		},
 		{
 			name: 'LT',
 			role: 'Digital Strategist & Development',
-			bio: 'Bridging the gap between engineering precision and real estate execution. Landon ensures Jax Street CRE stays at the absolute forefront of the industry.',
-			// Make sure 'landon-placeholder.jpg' is exactly what you named the file in your static folder
+			bio: 'Bridging the gap between engineering precision and real estate execution. L ensures Jax Street CRE stays at the absolute forefront of the industry.',
+			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
 			image: '/placeholder.jpg' 
 		}
 	];
@@ -95,7 +95,7 @@
 
 <svelte:head>
 	<title>About Us | Jax Street CRE</title>
-	<meta name="description" content="Founded by Eric Kamen and Landon Tally, Jax Street CRE is an Indiana-based commercial real estate firm focused on retail and light industrial properties." />
+	<meta name="description" content="Jax Street CRE is an Indiana-based commercial real estate firm focused on retail and light industrial properties." />
 </svelte:head>
 
 <div class="fixed inset-0 z-0 pointer-events-none bg-zinc-950">
