@@ -77,14 +77,14 @@
 		{
 			name: 'E, MBA',
 			role: 'Founder & Principal',
-			bio: "Replacement text for E's bio. This should be updated with the actual content that describes E's background, experience, and role at Jax Street CRE.",
+			bio: "Replacement text for E's bio. This should be updated with the actual content that describes E's background, experience, and role at Jax Test.",
 			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
 			image: '/placeholder.jpg' 
 		},
 		{
 			name: 'L',
 			role: 'Digital Strategist & Development',
-			bio: 'Bridging the gap between engineering precision and real estate execution. L ensures Jax Street CRE stays at the absolute forefront of the industry.',
+			bio: 'Bridging the gap between engineering precision and real estate execution. L ensures Jax Test stays at the absolute forefront of the industry.',
 			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
 			image: '/placeholder.jpg' 
 		}
@@ -94,8 +94,8 @@
 <svelte:window onmousemove={handleMouseMove} />
 
 <svelte:head>
-	<title>About Us | Jax Street CRE</title>
-	<meta name="description" content="Jax Street CRE is an Indiana-based commercial real estate firm focused on retail and light industrial properties." />
+	<title>About Us | Jax Test</title>
+	<meta name="description" content="Jax Test is an Indiana-based commercial real estate firm focused on retail and light industrial properties." />
 </svelte:head>
 
 <div class="fixed inset-0 z-0 pointer-events-none bg-zinc-950">
@@ -168,7 +168,7 @@
 				<div use:reveal class="flex flex-col gap-4">
 					<span class="text-teal-600 font-black uppercase tracking-widest text-xs">Our Strategy</span>
 					<p class="text-zinc-600 font-medium leading-relaxed max-w-md">
-						Although founded in 2025, Jax Street CRE has ties to commercial real estate since 1984. These markets allow us to operate our buildings using our vertically integrated strategy.
+						Although founded in 2025, Jax Test has ties to commercial real estate since 1984. These markets allow us to operate our buildings using our vertically integrated strategy.
 					</p>
 				</div>
 				<div use:reveal class="flex flex-col gap-4">

@@ -37,7 +37,7 @@
       <div class="flex flex-col gap-4 animate-slot-down">
         {#each spins as spinId (spinId)}
           <div class="h-20 shrink-0 flex items-center leading-none">
-            Jax Street CRE
+            Jax Test
           </div>
         {/each}
       </div>

@@ -22,7 +22,7 @@
 </script>
 
 <svelte:head>
-	<title>Leased Properties | Jax Street CRE</title>
+	<title>Leased Properties | Jax Test</title>
 	<meta name="description" content="Browse our portfolio of fully leased retail and light industrial properties in Indiana." />
 </svelte:head>
 

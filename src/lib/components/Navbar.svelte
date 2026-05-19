@@ -24,7 +24,7 @@
       <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
     </div>
     <div class="text-xl md:text-2xl font-bold tracking-widest uppercase text-white drop-shadow-md">
-      <a href="/" onclick={() => isMobileMenuOpen = false}>Jax Street CRE</a>
+      <a href="/" onclick={() => isMobileMenuOpen = false}>Jax Test</a>
     </div>
   </div>
 

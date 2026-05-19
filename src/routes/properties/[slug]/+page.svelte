@@ -32,7 +32,7 @@
 </script>
 
 <svelte:head>
-	<title>{property.title || 'Property Details'} | Jax Street CRE</title>
+	<title>{property.title || 'Property Details'} | Jax Test</title>
 	<meta name="description" content="Commercial real estate listing for {property.title} located in {property.location}." />
 </svelte:head>
 

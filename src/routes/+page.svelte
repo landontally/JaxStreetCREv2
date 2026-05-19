@@ -94,8 +94,8 @@
 <svelte:window onmousemove={handleMouseMove} />
 
 <svelte:head>
-	<title>Jax Street CRE | Indiana Commercial Real Estate</title>
-	<meta name="description" content="Jax Street CRE is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
+	<title>Jax Test | Indiana Commercial Real Estate</title>
+	<meta name="description" content="Jax Test is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
 </svelte:head>
 
 <div class="bg-zinc-950 min-h-screen text-white selection:bg-teal-500 overflow-hidden">
@@ -282,7 +282,7 @@
 			</h2>
 			
 			<p use:reveal class="text-lg md:text-xl text-zinc-600 font-medium leading-relaxed max-w-2xl mb-12">
-				At Jax Street CRE, we start with our tenants and work our way backwards. This means that our buildings must setup our tenants for long-term success. We believe that charging our tenants a rent that makes sense and operating our buildings to a high standard is the goal.
+				At Jax Test, we start with our tenants and work our way backwards. This means that our buildings must setup our tenants for long-term success. We believe that charging our tenants a rent that makes sense and operating our buildings to a high standard is the goal.
 			</p>
 			
 			<a use:reveal href="/about" class="group flex items-center gap-4 bg-transparent border-2 border-zinc-950 text-zinc-950 px-10 py-5 rounded-sm hover:bg-zinc-950 hover:text-white transition-all duration-300">

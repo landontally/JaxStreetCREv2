@@ -12,7 +12,7 @@
           <div class="w-8 h-8 rounded-full border-2 border-teal-500 flex items-center justify-center shrink-0">
             <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
           </div>
-          <span class="text-xl font-bold tracking-widest uppercase text-white">Jax Street CRE</span>
+          <span class="text-xl font-bold tracking-widest uppercase text-white">Jax Test</span>
         </div>
         <p class="text-zinc-400 text-sm leading-relaxed max-w-sm">
           Hands-on property owners striving for perfection while remaining opportunistic in our growth path. Rooted in Indiana.
@@ -40,7 +40,7 @@
     </div>
 
     <div class="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest font-bold text-zinc-600">
-      <p>&copy; {new Date().getFullYear()} Jax Street CRE. All rights reserved.</p>
+      <p>&copy; {new Date().getFullYear()} Jax Test. All rights reserved.</p>
       <div class="flex gap-6">
         <a href="#privacy" class="hover:text-zinc-400 transition-colors">Privacy</a>
         <a href="#terms" class="hover:text-zinc-400 transition-colors">Terms</a>
