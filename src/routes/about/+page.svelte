@@ -82,7 +82,7 @@
 			image: '/placeholder.jpg' 
 		},
 		{
-			name: 'LT',
+			name: 'L',
 			role: 'Digital Strategist & Development',
 			bio: 'Bridging the gap between engineering precision and real estate execution. L ensures Jax Street CRE stays at the absolute forefront of the industry.',
 			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
