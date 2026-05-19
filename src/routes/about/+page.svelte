@@ -183,7 +183,7 @@
 
 	<section class="relative py-32 px-6 md:px-12 max-w-7xl mx-auto">
 		<div class="mb-32">
-			<h2 use:reveal class="text-4xl font-bold tracking-tight text-white">The Minds Behind Jax Street</h2>
+			<h2 use:reveal class="text-4xl font-bold tracking-tight text-white">The Minds Behind Jax Test</h2>
 		</div>
 
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-32">
