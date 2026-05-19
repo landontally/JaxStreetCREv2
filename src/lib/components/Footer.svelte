@@ -32,8 +32,8 @@
       <div class="flex flex-col gap-5">
         <h4 class="text-zinc-50 font-bold uppercase tracking-widest text-xs">Contact</h4>
         <div class="flex flex-col gap-3 text-sm text-zinc-400 font-medium">
-          <p class="flex items-center gap-2">Bloomington & Indy, IN</p>
-          <a href="mailto:eric@jaxstreetcre.com" class="hover:text-teal-400 transition-colors w-fit">eric@jaxstreetcre.com</a>
+          <p class="flex items-center gap-2">Indiana</p>
+          <a href="mailto:eric@jaxstreetcre.com" class="hover:text-teal-400 transition-colors w-fit">eric email</a>
           <a href="tel:5551234567" class="hover:text-teal-400 transition-colors w-fit">(555) 123-4567</a>
         </div>
       </div>

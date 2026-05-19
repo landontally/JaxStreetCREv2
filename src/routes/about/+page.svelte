@@ -2,6 +2,12 @@
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 
+	// Pull in the data from the +page.server.ts file
+	let { data } = $props();
+	
+	// Use the image from Sanity, or fallback to the Unsplash URL if Sanity is empty
+	let heroImage = data?.aboutPage?.heroImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070';
+
 	// --- Mouse Tracking for the Global Grid ---
 	let mouseX = $state(0);
 	let mouseY = $state(0);
@@ -19,7 +25,6 @@
 	let textSection = $state<HTMLElement>();
 	let revealProgress = $state(0); // 0 to 1
 
-	// FIXED: Moved the math into Svelte 5 derived runes
 	let p1 = $derived(Math.min(Math.max(revealProgress * 3, 0), 1) * 100);
 	let p2 = $derived(Math.min(Math.max((revealProgress - 0.33) * 3, 0), 1) * 100);
 	let p3 = $derived(Math.min(Math.max((revealProgress - 0.66) * 3, 0), 1) * 100);
@@ -46,26 +51,20 @@
 			currentWordIndex = (currentWordIndex + 1) % rotatingWords.length;
 		}, 2500);
 
-		// Manual Scroll listener for the line-by-line text gradient
 		const handleScroll = () => {
 			if (!textSection) return;
-			
 			const rect = textSection.getBoundingClientRect();
 			const windowHeight = window.innerHeight;
-			
-			// Start revealing when the text block enters the bottom 80% of the screen
 			const start = windowHeight * 0.6; 
-			const end = windowHeight * 0.2; // Fully revealed when it hits the top 20% of the screen
-			
+			const end = windowHeight * 0.2; 
 			const current = start - rect.top;
 			const total = start - end;
-			
 			let progress = current / total;
 			revealProgress = Math.max(0, Math.min(1, progress)); 
 		};
 
 		window.addEventListener('scroll', handleScroll);
-		handleScroll(); // Init on load
+		handleScroll(); 
 
 		return () => {
 			clearInterval(interval);
@@ -73,18 +72,21 @@
 		};
 	});
 
+	// --- TEAM ARRAY (Updated to use local static images) ---
 	const team = [
 		{
-			name: 'Eric Kamen, MBA',
+			name: 'Eric K., MBA',
 			role: 'Founder & Principal (RE License #RB14050427)',
 			bio: "Eric's real estate career technically began upon graduating college in 2015, though, he has been around the business his entire life. Eric has gained insights, market knowledge, and valuable experience over the past eight years in the commercial real estate field, and he strives to continuously learn all facets of the business. Eric graduated from Indiana University’s Kelley School of Business and continued his educational journey by receiving an MBA through the Kelley School of Business in 2022.",
-			image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800'
+			// Make sure 'eric-placeholder.jpg' is exactly what you named the file in your static folder
+			image: '/placeholder.jpg' 
 		},
 		{
-			name: 'Landon Tally',
+			name: 'LT',
 			role: 'Development & Strategy',
 			bio: 'Bridging the gap between engineering precision and real estate execution. Landon ensures Jax Street CRE stays at the absolute forefront of the industry.',
-			image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800'
+			// Make sure 'landon-placeholder.jpg' is exactly what you named the file in your static folder
+			image: '/placeholder.jpg' 
 		}
 	];
 </script>
@@ -111,7 +113,7 @@
 		<div class="absolute inset-0 z-0 bg-zinc-950">
 			<div 
 				class="absolute inset-0 bg-cover bg-center bg-fixed opacity-40"
-				style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070');"
+				style="background-image: url('{heroImage}');"
 			></div>
 			<div class="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/60 to-zinc-950"></div>
 		</div>
@@ -151,22 +153,13 @@
 			</p>
 
 			<div class="hidden md:flex flex-col md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-				<span 
-					class="w-fit"
-					style="background: linear-gradient(to right, #09090b {p1}%, #e4e4e7 {p1}%); -webkit-background-clip: text; color: transparent;"
-				>
+				<span class="w-fit" style="background: linear-gradient(to right, #09090b {p1}%, #e4e4e7 {p1}%); -webkit-background-clip: text; color: transparent;">
 					We focus on retail and light
 				</span>
-				<span 
-					class="w-fit"
-					style="background: linear-gradient(to right, #09090b {p2}%, #e4e4e7 {p2}%); -webkit-background-clip: text; color: transparent;"
-				>
+				<span class="w-fit" style="background: linear-gradient(to right, #09090b {p2}%, #e4e4e7 {p2}%); -webkit-background-clip: text; color: transparent;">
 					industrial properties in the
 				</span>
-				<span 
-					class="w-fit"
-					style="background: linear-gradient(to right, #09090b {p3}%, #e4e4e7 {p3}%); -webkit-background-clip: text; color: transparent;"
-				>
+				<span class="w-fit" style="background: linear-gradient(to right, #09090b {p3}%, #e4e4e7 {p3}%); -webkit-background-clip: text; color: transparent;">
 					markets we know best.
 				</span>
 			</div>
