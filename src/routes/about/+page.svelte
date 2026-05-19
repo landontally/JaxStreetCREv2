@@ -83,7 +83,7 @@
 		},
 		{
 			name: 'LT',
-			role: 'Development & Strategy',
+			role: 'Digital Strategist & Development',
 			bio: 'Bridging the gap between engineering precision and real estate execution. Landon ensures Jax Street CRE stays at the absolute forefront of the industry.',
 			// Make sure 'landon-placeholder.jpg' is exactly what you named the file in your static folder
 			image: '/placeholder.jpg' 
