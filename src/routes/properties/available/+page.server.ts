@@ -6,7 +6,7 @@ export async function load() {
     *[_type == "property" && status == "Available"] | order(_createdAt desc) {
       title,
       location,
-      type,
+      "type": type->title,
       status,
       "image": mainImage.asset->url,
       "slug": slug.current,
