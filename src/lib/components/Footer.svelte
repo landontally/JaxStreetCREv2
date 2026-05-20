@@ -32,7 +32,7 @@
         <div class="flex flex-col gap-3 text-sm text-zinc-400 font-medium">
           <p class="flex items-center gap-2">Bloomington, Indiana</p>
           <a href="mailto:eric@jaxstreetcre.com" class="hover:text-teal-400 transition-colors w-fit">eric@jaxstreetcre.com</a>
-          <a href="tel:5551234567" class="hover:text-teal-400 transition-colors w-fit">(555) 123-4567</a>
+          <a href="tel:8123451663" class="hover:text-teal-400 transition-colors w-fit">(812) 345-1663</a>
         </div>
       </div>
     </div>
