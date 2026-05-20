@@ -20,12 +20,12 @@
 <nav class="fixed top-0 left-0 w-full z-[60] transition-all duration-300 px-6 py-4 flex justify-between items-center {scrollY > 50 || isMobileMenuOpen ? 'bg-zinc-950/95 backdrop-blur-md shadow-lg border-b border-zinc-800' : 'bg-transparent'}">
   
   <div class="flex items-center gap-3">
-    <div class="w-8 h-8 rounded-full border-2 border-teal-500 flex items-center justify-center">
-      <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
-    </div>
-    <div class="text-xl md:text-2xl font-bold tracking-widest uppercase text-white drop-shadow-md">
-      <a href="/" onclick={() => isMobileMenuOpen = false}>Jax Test</a>
-    </div>
+    <a href="/" onclick={() => isMobileMenuOpen = false} class="flex items-center gap-3 group hover:opacity-80 transition-opacity">
+      <img src="/logo-white.svg" alt="Jax Street Logo" class="w-8 h-8 md:w-9 md:h-9 object-contain shrink-0 group-hover:scale-105 transition-transform" />
+      <span class="text-xl md:text-2xl font-bold tracking-widest uppercase text-white drop-shadow-md">
+        Jax Street CRE
+      </span>
+    </a>
   </div>
 
   <div class="hidden lg:flex items-center gap-8 text-sm font-bold text-zinc-100 uppercase tracking-wider">
@@ -114,7 +114,7 @@
           </div>
           <div>
             <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Call Us</p>
-            <a href="tel:5551234567" class="text-sm font-bold text-zinc-950 hover:text-teal-600 transition-colors">(555) 123-4567</a>
+            <a href="tel:8123451663" class="text-sm font-bold text-zinc-950 hover:text-teal-600 transition-colors">(812) 345-1663</a>
           </div>
         </div>
         
@@ -124,7 +124,7 @@
           </div>
           <div>
             <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Email Us</p>
-            <a href="mailto:e@email.com" class="text-sm font-bold text-zinc-950 hover:text-teal-600 transition-colors">e@email.com</a>
+            <a href="mailto:eric@jaxstreetcre.com" class="text-sm font-bold text-zinc-950 hover:text-teal-600 transition-colors">eric@jaxstreetcre.com</a>
           </div>
         </div>
       </div>

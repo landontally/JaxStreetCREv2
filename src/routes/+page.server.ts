@@ -1,12 +1,13 @@
 import { client } from '$lib/sanity';
 
 export async function load() {
-  const propertiesQuery = `
+const propertiesQuery = `
     *[_type == "property" && featured == true] | order(_createdAt desc)[0...5] {
       title,
       location,
       type,
       status,
+      tenants, // <-- Added this!
       "image": mainImage.asset->url,
       "slug": slug.current
     }

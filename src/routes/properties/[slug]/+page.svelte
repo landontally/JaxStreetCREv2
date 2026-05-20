@@ -32,7 +32,7 @@
 </script>
 
 <svelte:head>
-	<title>{property.title || 'Property Details'} | Jax Test</title>
+	<title>{property.title || 'Property Details'} | Jax Street CRE</title>
 	<meta name="description" content="Commercial real estate listing for {property.title} located in {property.location}." />
 </svelte:head>
 
@@ -45,7 +45,7 @@
 		<div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-zinc-950/10"></div>
 	</div>
 
-	<div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col gap-6" use:reveal>
+	<div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col gap-5" use:reveal>
 		<div class="flex items-center gap-3">
 			<span class="px-3 py-1.5 bg-teal-500/90 text-white text-[10px] font-black uppercase tracking-widest rounded-sm backdrop-blur-md shadow-lg">
 				{property.status || 'Available'}
@@ -55,14 +55,21 @@
 			</span>
 		</div>
 		
-		<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl max-w-5xl">
+		<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl max-w-5xl mb-2">
 			{property.title || 'Untitled Property'}
 		</h1>
 		
 		<p class="text-teal-300 font-bold text-lg md:text-xl flex items-center gap-2 drop-shadow-md">
-			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+			<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
 			{property.location || 'Location upon request'}
 		</p>
+
+		{#if property.tenants && property.tenants.length > 0}
+			<p class="text-white font-bold text-xl drop-shadow-md flex items-center gap-3 mt-3">
+				<span class="px-2 py-1 bg-white/10 text-teal-300 text-[10px] font-bold uppercase tracking-widest rounded-sm backdrop-blur-sm">Tenants</span>
+				{property.tenants.join(', ')}
+			</p>
+		{/if}
 	</div>
 </section>
 
@@ -144,11 +151,11 @@
 						<div class="flex flex-col gap-4 relative z-10">
 							<a href="mailto:e@email.com" class="w-full bg-teal-600 hover:bg-teal-500 text-white text-center font-bold py-4 rounded-sm transition-colors flex items-center justify-center gap-3 uppercase tracking-widest text-xs">
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-								Email E
+								Email Eric
 							</a>
 							<a href="tel:5551234567" class="w-full text-center border border-white/20 hover:border-white hover:bg-white hover:text-zinc-950 text-white font-bold py-4 rounded-sm transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-xs">
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-								Call E
+								Call Eric
 							</a>
 						</div>
 					</div>

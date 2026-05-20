@@ -94,8 +94,8 @@
 <svelte:window onmousemove={handleMouseMove} />
 
 <svelte:head>
-	<title>Jax Test | Indiana Commercial Real Estate</title>
-	<meta name="description" content="Jax Test is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
+	<title>Jax Street CRE | Indiana Commercial Real Estate</title>
+	<meta name="description" content="Jax Street CRE is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
 </svelte:head>
 
 <div class="bg-zinc-950 min-h-screen text-white selection:bg-teal-500 overflow-hidden">
@@ -106,10 +106,7 @@
 			<div class="absolute inset-0 opacity-[0.15]" 
 				 style="background-image: linear-gradient(to right, #71717a 1px, transparent 1px), linear-gradient(to bottom, #71717a 1px, transparent 1px); background-size: 60px 60px;">
 			</div>
-			<div class="absolute inset-0 transition-opacity duration-300 ease-out" 
-				 style="background: radial-gradient(800px circle at {mouseX}px {mouseY}px, rgba(20, 184, 166, 0.15), transparent 40%);">
 			</div>
-		</div>
 
 		{#each heroImages as img, i}
 			<div 
@@ -117,7 +114,20 @@
 				style="background-image: url('{img}'); opacity: {i === currentHeroIndex ? 0.4 : 0};"
 			></div>
 		{/each}
-		<div class="absolute inset-0 z-10 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
+
+		{#each heroImages as img, i}
+			<div 
+				class="absolute inset-0 z-10 bg-cover bg-center bg-no-repeat transition-opacity duration-[2000ms] ease-in-out pointer-events-none"
+				style="
+					background-image: url('{img}'); 
+					opacity: {i === currentHeroIndex ? 0.85 : 0};
+					mask-image: radial-gradient(600px circle at {mouseX}px {mouseY}px, black 0%, transparent 80%);
+					-webkit-mask-image: radial-gradient(600px circle at {mouseX}px {mouseY}px, black 0%, transparent 80%);
+				"
+			></div>
+		{/each}
+
+		<div class="absolute inset-0 z-10 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none"></div>
 		
 		<div class="relative z-20 w-full max-w-7xl mx-auto flex flex-col items-start mt-20">
 			
@@ -126,10 +136,10 @@
 				<span class="text-teal-400 text-xs font-black uppercase tracking-[0.4em]">Indiana Commercial Real Estate</span>
 			</div>
 
-			<h1 class="text-6xl md:text-[8rem] lg:text-[10rem] font-bold tracking-tighter leading-[0.85] uppercase mb-8">
-				<span use:reveal class="block text-zinc-100">Structure.</span>
-				<span use:reveal class="block text-zinc-400">Vision.</span>
-				<span use:reveal class="block text-transparent webkit-text-stroke mt-2">Execution.</span>
+			<h1 class="text-4xl md:text-6xl lg:text-[7rem] font-bold tracking-tighter leading-[0.9] uppercase mb-8">
+				<span use:reveal class="block text-white">Structure.</span>
+				<span use:reveal class="block text-zinc-300">Vision.</span>
+				<span use:reveal class="block text-zinc-500">Execution.</span>
 			</h1>
 			
 			<p use:reveal class="text-lg md:text-xl text-zinc-400 max-w-2xl mb-12 leading-relaxed font-light">
@@ -172,11 +182,7 @@
 			<div class="relative z-10 w-full max-w-[1800px] mx-auto px-6 h-[70vh] flex flex-col">
 				
 				<div use:reveal class="text-center mb-16 flex flex-col items-center">
-					<div class="flex items-center gap-4 mb-6">
-						<div class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
-						<span class="text-teal-400 text-xs font-black uppercase tracking-[0.3em]">Market Highlights</span>
-					</div>
-					<h2 class="text-4xl md:text-6xl font-bold tracking-tight text-white drop-shadow-md">Featured Portfolio</h2>
+					<h2 class="text-4xl md:text-6xl font-bold tracking-tight text-white drop-shadow-md">Featured Properties</h2>
 				</div>
 
 				<div 
@@ -212,13 +218,22 @@
 										<span class="inline-block bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm mb-2 sm:mb-4 backdrop-blur-md">
 											{property.status}
 										</span>
-										<h3 class="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-tight mb-1 sm:mb-2 line-clamp-2">
+									<h3 class="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-tight mb-1 sm:mb-2 line-clamp-2">
 											{property.title}
 										</h3>
-										<p class="text-zinc-300 font-medium text-sm sm:text-base flex items-center gap-2">
+										
+										<p class="text-zinc-300 font-medium text-sm sm:text-base flex items-center gap-2 mb-2 sm:mb-3">
 											<svg class="w-4 h-4 text-teal-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
 											<span class="truncate">{property.location}</span>
 										</p>
+
+										{#if property.tenants && property.tenants.length > 0}
+											<p class="text-white font-bold text-sm sm:text-base line-clamp-1">
+												<span class="text-teal-400/80 mr-1 text-[10px] uppercase tracking-widest font-bold">Tenants:</span> 
+												{property.tenants.join(', ')}
+											</p>
+										{/if}
+
 									</div>
 									
 									<a href="/properties/{property.slug}" onclick={(e) => { if(isDragging) e.preventDefault(); e.stopPropagation(); }} class="shrink-0 flex justify-center items-center gap-4 group/btn bg-white/10 hover:bg-white border border-white/20 hover:border-white backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-sm transition-all duration-300 cursor-pointer mt-2 md:mt-0">
@@ -269,10 +284,10 @@
 
 		<div class="max-w-4xl mx-auto text-center flex flex-col items-center relative z-10">
 			
-			<div use:reveal class="flex items-center gap-4 mb-10">
-				<div class="h-px w-12 bg-teal-500"></div>
-				<span class="text-teal-600 text-xs font-black uppercase tracking-[0.4em]">About Us</span>
-				<div class="h-px w-12 bg-teal-500"></div>
+			<div use:reveal class="flex items-center gap-4 mb-10 relative z-10">
+				<div class="h-px w-12 bg-teal-600"></div>
+				<span class="text-teal-800 bg-white px-2 text-xs font-black uppercase tracking-[0.4em]">About Us</span>
+				<div class="h-px w-12 bg-teal-600"></div>
 			</div>
 
 			<h2 use:reveal class="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.1] mb-10 text-zinc-950">
@@ -282,10 +297,10 @@
 			</h2>
 			
 			<p use:reveal class="text-lg md:text-xl text-zinc-600 font-medium leading-relaxed max-w-2xl mb-12">
-				At Jax Test, we start with our tenants and work our way backwards. This means that our buildings must setup our tenants for long-term success. We believe that charging our tenants a rent that makes sense and operating our buildings to a high standard is the goal.
+				At Jax Street CRE, we start with our tenants and work our way backwards. This means that our buildings must setup our tenants for long-term success. We believe that charging our tenants a rent that makes sense and operating our buildings to a high standard is the goal.
 			</p>
 			
-			<a use:reveal href="/about" class="group flex items-center gap-4 bg-transparent border-2 border-zinc-950 text-zinc-950 px-10 py-5 rounded-sm hover:bg-zinc-950 hover:text-white transition-all duration-300">
+			<a use:reveal href="/about" class="group flex items-center gap-4 bg-zinc-950 text-white border-2 border-zinc-950 px-10 py-5 rounded-sm hover:bg-teal-600 hover:border-teal-600 transition-all duration-300 shadow-xl hover:shadow-teal-500/20 z-10">
 				<span class="text-xs font-bold uppercase tracking-[0.2em]">Discover Our Story</span>
 				<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
 			</a>

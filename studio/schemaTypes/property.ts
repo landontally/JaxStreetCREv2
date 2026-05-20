@@ -50,6 +50,13 @@ export default defineType({
       },
     }),
     defineField({
+      name: 'tenants',
+      title: 'Tenant(s)',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Add the names of current tenants (if applicable).',
+    }),
+    defineField({
       name: 'featured',
       title: 'Feature on Homepage',
       type: 'boolean',

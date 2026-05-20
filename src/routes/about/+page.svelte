@@ -75,17 +75,17 @@
 	// --- TEAM ARRAY (Updated to use local static images) ---
 	const team = [
 		{
-			name: 'E, MBA',
-			role: 'Founder & Principal',
-			bio: "Replacement text for E's bio. This should be updated with the actual content that describes E's background, experience, and role at Jax Test.",
-			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
-			image: '/placeholder.jpg' 
+			name: 'Eric Kamen, MBA',
+			role: 'Founder & Principal (RE License #RB14050427)',
+			bio: "Eric's real estate career technically began upon graduating college in 2015, though, he has been around the business his entire life. Eric has gained insights, market knowledge, and valuable experience over the past eight years in the commercial real estate field, and he strives to continuously learn all facets of the business. Eric graduated from Indiana University’s Kelley School of Business and continued his educational journey by receiving an MBA through the Kelley School of Business in 2022.",
+			// Make sure 'eric2.jpg' is exactly what you named the file in your static folder
+			image: '/eric2.jpg' 
 		},
 		{
-			name: 'L',
+			name: 'Landon Tally',
 			role: 'Digital Strategist & Development',
-			bio: 'Bridging the gap between engineering precision and real estate execution. L ensures Jax Test stays at the absolute forefront of the industry.',
-			// Make sure 'placeholder.jpg' is exactly what you named the file in your static folder
+			bio: 'Bridging the gap with his technological precision, Landon ensures Jax Street stays at the absolute forefront of the industry. Having graduated in 2015 with a BSc in Computer Engineering Technology, Landon has dabbled in various aspects of the tech world, ranging from robotics to software development and wesite design. Wtih an insatiable thirst for knowledge, Landon is always learning and applying new technologies to keep Jax Street ahead of the curve.',
+			// Make sure 'landon2.jpg' is exactly what you named the file in your static folder
 			image: '/placeholder.jpg' 
 		}
 	];
@@ -94,8 +94,8 @@
 <svelte:window onmousemove={handleMouseMove} />
 
 <svelte:head>
-	<title>About Us | Jax Test</title>
-	<meta name="description" content="Jax Test is an Indiana-based commercial real estate firm focused on retail and light industrial properties." />
+	<title>About Us | Jax Street CRE</title>
+	<meta name="description" content="Lead by Eric Kamen and designed by Landon Tally,Jax Street CRE is an Indiana-based commercial real estate firm focused on retail and light industrial properties." />
 </svelte:head>
 
 <div class="fixed inset-0 z-0 pointer-events-none bg-zinc-950">
@@ -168,7 +168,7 @@
 				<div use:reveal class="flex flex-col gap-4">
 					<span class="text-teal-600 font-black uppercase tracking-widest text-xs">Our Strategy</span>
 					<p class="text-zinc-600 font-medium leading-relaxed max-w-md">
-						Although founded in 2025, Jax Test has ties to commercial real estate since 1984. These markets allow us to operate our buildings using our vertically integrated strategy.
+						Although founded in 2025, Jax Street CRE has ties to commercial real estate since 1984. These markets allow us to operate our buildings using our vertically integrated strategy.
 					</p>
 				</div>
 				<div use:reveal class="flex flex-col gap-4">
@@ -183,7 +183,7 @@
 
 	<section class="relative py-32 px-6 md:px-12 max-w-7xl mx-auto">
 		<div class="mb-32">
-			<h2 use:reveal class="text-4xl font-bold tracking-tight text-white">The Minds Behind Jax Test</h2>
+			<h2 use:reveal class="text-4xl font-bold tracking-tight text-white">The Minds Behind Jax Street CRE</h2>
 		</div>
 
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-32">

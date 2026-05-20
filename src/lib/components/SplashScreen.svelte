@@ -1,11 +1,11 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { page } from '$app/stores';
-
+  
   let isHome = $derived($page.url.pathname === '/');
   let show = $state(false);
 
-  // 1. THIS CONTROLS THE AMOUNT OF SPINS
+  // THIS CONTROLS THE AMOUNT OF SPINS
   const spins = Array.from({ length: 7 }, (_, i) => i);
 
   $effect(() => {
@@ -29,7 +29,9 @@
       <div class="flex flex-col gap-4 animate-slot-up">
         {#each spins as spinId (spinId)}
           <div class="h-20 shrink-0 flex items-center justify-center">
-            <svg class="w-10 h-10 md:w-14 md:h-14 border-4 border-zinc-50 rounded-full" viewBox="0 0 24 24"></svg>
+            
+            <img src="/logo-white.svg" alt="Jax Street Logo" class="w-10 h-10 md:w-14 md:h-14 object-contain" />
+            
           </div>
         {/each}
       </div>
@@ -37,7 +39,7 @@
       <div class="flex flex-col gap-4 animate-slot-down">
         {#each spins as spinId (spinId)}
           <div class="h-20 shrink-0 flex items-center leading-none">
-            Jax Test
+            Jax Street CRE
           </div>
         {/each}
       </div>

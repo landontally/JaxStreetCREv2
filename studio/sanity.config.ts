@@ -8,7 +8,7 @@ export default defineConfig({
   title: 'jaxstreetcre',
 
   projectId: 'smzr73s0',
-  dataset: 'production',
+  dataset: 'real-data',
 
   plugins: [structureTool(), visionTool()],
 

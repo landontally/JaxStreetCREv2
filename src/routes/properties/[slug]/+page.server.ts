@@ -8,6 +8,7 @@ const query = `
       location,
       type,
       status,
+      tenants, // <-- Added this!
       description,
       highlights,
       coordinates,

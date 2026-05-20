@@ -22,7 +22,7 @@
 </script>
 
 <svelte:head>
-	<title>Available Properties | Jax Test</title>
+	<title>Available Properties | Jax Street CRE</title>
 	<meta name="description" content="Browse our portfolio of available retail and light industrial properties in Indiana." />
 </svelte:head>
 
