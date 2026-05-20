@@ -6,7 +6,7 @@ const query = `
     *[_type == "property" && slug.current == $slug][0] {
       title,
       location,
-      type,
+      "type": type->title, // <-- Add the arrow here!
       status,
       tenants, // <-- Added this!
       description,

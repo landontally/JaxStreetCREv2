@@ -5,9 +5,9 @@ const propertiesQuery = `
     *[_type == "property" && featured == true] | order(_createdAt desc)[0...5] {
       title,
       location,
-      type,
+      "type": type->title, // <-- Add the arrow here!
       status,
-      tenants, // <-- Added this!
+      tenants,
       "image": mainImage.asset->url,
       "slug": slug.current
     }
