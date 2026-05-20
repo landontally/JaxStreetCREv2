@@ -33,7 +33,7 @@
             <div>
                 <span class="text-teal-500 text-[10px] font-black uppercase tracking-[0.4em] block mb-2">Active Listings</span>
                 <h1 class="text-3xl md:text-5xl font-bold tracking-tighter uppercase flex flex-col sm:flex-row sm:gap-3 text-white">
-                    Available <span>Properties.</span>
+                    Leased <span>Properties.</span>
                 </h1>
             </div>
             <div class="flex items-center gap-3">
