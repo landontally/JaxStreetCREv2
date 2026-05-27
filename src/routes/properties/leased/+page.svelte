@@ -58,6 +58,11 @@
     });
 </script>
 
+<svelte:head>
+	<title>Leased Properties | Jax Street CRE</title>
+	<meta name="description" content="View our portfolio of successfully leased retail and light industrial properties across Indiana." />
+</svelte:head>
+
 <div class="bg-white min-h-screen text-zinc-950 flex flex-col overflow-hidden relative">
     
     <div class="w-full border-b border-zinc-800 bg-zinc-950 relative overflow-hidden px-6 md:px-12 pt-32 pb-8 shrink-0">
