@@ -1,47 +1,100 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
-	import InteractiveMap from '$lib/components/InteractiveMap.svelte';
+    import { fly } from 'svelte/transition';
+    import InteractiveMap from '$lib/components/InteractiveMap.svelte';
 
-	let { data } = $props();
-	let properties = data?.properties || []; 
+    let { data } = $props();
+    let properties = data.properties;
 
-	// State to handle clicking "Focus Map" on a specific property
-	let activeLocation = $state<any>(null);
-	
-	// State for the mobile map modal
-	let isMobileMapOpen = $state(false);
+    let activeLocation = $state(null);
+    let isMobileMapOpen = $state(false);
 
-	// Lock background scrolling when the mobile map is open
-	$effect(() => {
-		if (isMobileMapOpen) {
-			document.body.style.overflow = 'hidden';
-		} else {
-			document.body.style.overflow = 'auto';
-		}
-	});
+    // --- SORT & FILTER STATE ---
+    let sortBy = $state('newest'); 
+    let filterCity = $state('All');
+
+    // Automatically generate a unique list of cities based on your properties array
+    let availableCities = $derived(
+        ['All', ...new Set(properties.map((p: any) => p.location.split(',')[0].trim()))].sort()
+    );
+
+    // Dynamically rebuild the list instantly whenever a dropdown changes
+    let displayProperties = $derived.by(() => {
+        let result = [...properties];
+
+        // 1. Apply City Filter
+        if (filterCity !== 'All') {
+            result = result.filter(p => p.location.split(',')[0].trim() === filterCity);
+        }
+
+        // 2. Apply Sorting
+        result.sort((a, b) => {
+            if (sortBy === 'newest') {
+                return new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime();
+            }
+            if (sortBy === 'oldest') {
+                return new Date(a._createdAt).getTime() - new Date(b._createdAt).getTime();
+            }
+            if (sortBy === 'addressAsc' || sortBy === 'addressDesc') {
+                const numA = parseInt(a.title) || 0; 
+                const numB = parseInt(b.title) || 0;
+                
+                if (numA !== numB) {
+                    return sortBy === 'addressAsc' ? numA - numB : numB - numA;
+                }
+                return sortBy === 'addressAsc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
+            }
+            return 0;
+        });
+
+        return result;
+    });
+
+    $effect(() => {
+        if (isMobileMapOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    });
 </script>
-
-<svelte:head>
-	<title>Leased Properties | Jax Street CRE</title>
-	<meta name="description" content="Browse our portfolio of fully leased retail and light industrial properties in Indiana." />
-</svelte:head>
 
 <div class="bg-white min-h-screen text-zinc-950 flex flex-col overflow-hidden relative">
     
     <div class="w-full border-b border-zinc-800 bg-zinc-950 relative overflow-hidden px-6 md:px-12 pt-32 pb-8 shrink-0">
         <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-                <span class="text-teal-500 text-[10px] font-black uppercase tracking-[0.4em] block mb-2">Active Listings</span>
+                <span class="text-teal-500 text-[10px] font-black uppercase tracking-[0.4em] block mb-2">Past Deals</span>
                 <h1 class="text-3xl md:text-5xl font-bold tracking-tighter uppercase flex flex-col sm:flex-row sm:gap-3 text-white">
                     Leased <span>Properties.</span>
                 </h1>
             </div>
             <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></div>
+                <div class="w-2 h-2 rounded-full bg-teal-500"></div>
                 <span class="text-zinc-400 font-bold uppercase tracking-widest text-[10px]">
-                    {properties.length} {properties.length === 1 ? 'Property' : 'Properties'} Found
+                    {displayProperties.length} {displayProperties.length === 1 ? 'Property' : 'Properties'} Found
                 </span>
             </div>
+        </div>
+    </div>
+
+    <div class="w-full bg-zinc-50 border-b border-zinc-200 px-6 md:px-12 py-3 shrink-0 flex flex-col sm:flex-row gap-4 items-center justify-between relative z-20">
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+            <label for="cityFilter" class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest shrink-0">City:</label>
+            <select id="cityFilter" bind:value={filterCity} class="bg-white border border-zinc-200 rounded-sm text-xs font-bold uppercase text-zinc-950 px-3 py-2 w-full sm:w-48 outline-none focus:border-teal-500 cursor-pointer shadow-sm">
+                {#each availableCities as city}
+                    <option value={city}>{city}</option>
+                {/each}
+            </select>
+        </div>
+        
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+            <label for="sortOrder" class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest shrink-0">Sort:</label>
+            <select id="sortOrder" bind:value={sortBy} class="bg-white border border-zinc-200 rounded-sm text-xs font-bold uppercase text-zinc-950 px-3 py-2 w-full sm:w-48 outline-none focus:border-teal-500 cursor-pointer shadow-sm">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="addressAsc">Address (Ascending)</option>
+                <option value="addressDesc">Address (Descending)</option>
+            </select>
         </div>
     </div>
 
@@ -49,9 +102,10 @@
         
         <div class="w-full lg:w-[450px] xl:w-[500px] h-full overflow-y-auto bg-white p-4 md:p-6 flex flex-col gap-4 custom-scrollbar shrink-0 relative z-10">
             
-            {#if properties.length > 0}
-                {#each properties as property}
-					<div class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg">                        
+            {#if displayProperties.length > 0}
+                {#each displayProperties as property}
+                    <div class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg">
+                        
                         <div class="w-2/5 md:w-1/3 min-h-[160px] h-full relative overflow-hidden bg-zinc-100 shrink-0">
                             <img 
                                 src={property.image} 
@@ -99,17 +153,19 @@
             {:else}
                 <div class="h-full flex flex-col items-center justify-center text-center opacity-70 p-6">
                     <svg class="w-10 h-10 text-zinc-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                    <p class="text-zinc-500 font-medium">No properties currently available.</p>
+                    <p class="text-zinc-500 font-medium">No properties match your filter.</p>
                 </div>
             {/if}
 
         </div>
 
         <div class="hidden lg:block flex-grow h-full bg-zinc-100 relative z-0 border-l border-zinc-200">
+            {#key filterCity}
             <InteractiveMap 
-                properties={properties} 
+                properties={displayProperties} 
                 activeLocation={activeLocation} 
             />
+            {/key}
         </div>
 
     </div>
@@ -139,26 +195,11 @@
             </div>
             
             <div class="flex-grow relative z-0">
-                <InteractiveMap properties={properties} activeLocation={activeLocation} />
+                {#key filterCity}
+                <InteractiveMap properties={displayProperties} activeLocation={activeLocation} />
+                {/key}
             </div>
         </div>
     {/if}
 
 </div>
-
-<style>
-	/* Sleek, light-mode scrollbar for the property list */
-	.custom-scrollbar::-webkit-scrollbar {
-		width: 6px;
-	}
-	.custom-scrollbar::-webkit-scrollbar-track {
-		background: #fafafa; /* zinc-50 */
-	}
-	.custom-scrollbar::-webkit-scrollbar-thumb {
-		background: #d4d4d8; /* zinc-300 */
-		border-radius: 4px;
-	}
-	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-		background: #14b8a6; /* teal-500 */
-	}
-</style>

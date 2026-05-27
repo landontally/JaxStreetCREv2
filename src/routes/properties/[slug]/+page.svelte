@@ -167,59 +167,66 @@
 	</div>
 </section>
 
-{#if property.coordinates}
-	<section class="bg-zinc-50 border-t border-zinc-200 pt-12 pb-24 md:pb-32 overflow-hidden">
-		<div class="max-w-7xl mx-auto px-6 relative z-10">
-			
-			<div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-12" use:reveal>
-				<div>
-					<h3 class="text-3xl font-bold text-zinc-950 tracking-tight mb-2">Property Map</h3>
-					<p class="text-zinc-500 font-medium">Explore the local market and click a business to see its location.</p>
-				</div>
-				{#if activeLocation}
-					<button onclick={() => activeLocation = null} class="text-[10px] font-bold text-teal-600 hover:text-teal-700 uppercase tracking-widest flex items-center gap-1 transition-colors shrink-0">
-						<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-						Reset Map
-					</button>
-				{/if}
-			</div>
+<section class="bg-zinc-50 border-t border-zinc-200 pt-12 pb-24 md:pb-32 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+        
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-12" use:reveal>
+            <div>
+                <h3 class="text-3xl font-bold text-zinc-950 tracking-tight mb-2">Property Map</h3>
+                <p class="text-zinc-500 font-medium">Explore the local market and click a business to see its location.</p>
+            </div>
+            {#if activeLocation}
+                <button onclick={() => activeLocation = null} class="text-[10px] font-bold text-teal-600 hover:text-teal-700 uppercase tracking-widest flex items-center gap-1 transition-colors shrink-0">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Reset Map
+                </button>
+            {/if}
+        </div>
 
-			{#if surroundingArea.length > 0}
-				<div use:reveal class="mb-4">
-					<div class="flex items-center gap-3 mb-3 pl-1">
-						<div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div>
-						<span class="text-teal-600 font-bold uppercase tracking-widest text-[10px]">Surrounding Businesses</span>
-					</div>
-					
-					<div class="w-full border border-zinc-200 bg-white rounded-sm overflow-hidden py-4 flex items-center relative z-20 shadow-sm">
-						<div class="absolute left-0 w-12 md:w-24 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-						<div class="absolute right-0 w-12 md:w-24 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
-						
-						<div class="flex animate-marquee-fast pause-on-hover w-max">
-							{#each marqueeItems as business}
-								<button 
-									onclick={() => activeLocation = business}
-									class="flex items-center gap-3 mx-8 text-sm md:text-base font-bold text-zinc-400 hover:text-teal-600 transition-colors uppercase tracking-widest cursor-pointer whitespace-nowrap"
-								>
-									{business.name}
-								</button>
-							{/each}
-						</div>
-					</div>
-				</div>
-			{/if}
-			
-			<div use:reveal class="w-full h-[400px] md:h-[500px] bg-zinc-100 rounded-sm border border-zinc-200 flex items-center justify-center overflow-hidden shadow-xl relative">
-				<InteractiveMap 
-					propertyCoords={property.coordinates} 
-					surroundingArea={property.surroundingArea}
-					activeLocation={activeLocation}
-					propertyTitle={property.title} 
-				/>
-			</div>
-		</div>
-	</section>
-{/if}
+        {#if surroundingArea.length > 0}
+            <div use:reveal class="mb-4">
+                <div class="flex items-center gap-3 mb-3 pl-1">
+                    <div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div>
+                    <span class="text-teal-600 font-bold uppercase tracking-widest text-[10px]">Surrounding Businesses</span>
+                </div>
+                
+                <div class="w-full border border-zinc-200 bg-white rounded-sm overflow-hidden py-4 flex items-center relative z-20 shadow-sm">
+                    <div class="absolute left-0 w-12 md:w-24 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+                    <div class="absolute right-0 w-12 md:w-24 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+                    
+                    <div class="flex animate-marquee-fast pause-on-hover w-max">
+                        {#each marqueeItems as business}
+                            <button 
+                                onclick={() => activeLocation = business}
+                                class="flex items-center gap-3 mx-8 text-sm md:text-base font-bold text-zinc-400 hover:text-teal-600 transition-colors uppercase tracking-widest cursor-pointer whitespace-nowrap"
+                            >
+                                {business.name}
+                            </button>
+                        {/each}
+                    </div>
+                </div>
+            </div>
+        {/if}
+        
+		<div class="w-full h-[400px] md:h-[500px] bg-zinc-100 rounded-sm border border-zinc-200 flex items-center justify-center overflow-hidden shadow-xl relative">
+            {#if property.coordinates && property.coordinates.lat && property.coordinates.lng}
+                <InteractiveMap 
+                    propertyCoords={property.coordinates} 
+                    
+                    surroundingArea={property.surroundingArea || []} 
+                    
+                    activeLocation={activeLocation}
+                    propertyTitle={property.title} 
+                />
+            {:else}
+                <div class="text-zinc-400 font-medium flex flex-col items-center gap-3">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                    <span>Map coordinates not yet provided.</span>
+                </div>
+            {/if}
+        </div>
+    </div>
+</section>
 
 <svelte:window onkeydown={(e) => { if (e.key === 'Escape' && selectedImage) selectedImage = null; }} />
 
