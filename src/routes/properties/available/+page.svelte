@@ -9,7 +9,7 @@
     let isMobileMapOpen = $state(false);
 
     // --- SORT & FILTER STATE ---
-    let sortBy = $state('newest'); // 'newest', 'oldest', 'addressAsc', 'addressDesc'
+    let sortBy = $state('addressAsc'); // 'newest', 'oldest', 'addressAsc', 'addressDesc'
     let filterCity = $state('All');
 
     // Automatically generate a unique list of cities based on your properties array
