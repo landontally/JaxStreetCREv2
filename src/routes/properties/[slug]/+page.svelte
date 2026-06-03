@@ -267,7 +267,7 @@
 	@media (prefers-reduced-motion: no-preference) {
 		/* Fast speed for seamless scrolling */
 		.animate-marquee-fast {
-			animation: marquee-fast 12s linear infinite;
+			animation: marquee-fast 22s linear infinite;
 		}
 	}
 </style>
