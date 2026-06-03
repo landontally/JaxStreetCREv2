@@ -39,10 +39,10 @@
 <section class="relative h-[70vh] flex flex-col justify-end px-6 md:px-12 pb-24 z-10 overflow-hidden bg-zinc-950">
 	<div class="absolute inset-0 z-0 bg-zinc-950">
 		<div 
-			class="absolute inset-0 bg-cover bg-center bg-fixed opacity-70"
+			class="absolute inset-0 bg-cover bg-center bg-fixed opacity-90"
 			style="background-image: url('{property.image}');"
 		></div>
-		<div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-zinc-950/10"></div>
+		<div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/30 to-transparent"></div>
 	</div>
 
 	<div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col gap-5" use:reveal>
