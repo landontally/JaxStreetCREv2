@@ -112,16 +112,19 @@
     <section class="relative h-screen w-full flex flex-col justify-center">
 		<div class="absolute inset-0 z-0 bg-zinc-950">
 			<div 
-				class="absolute inset-0 bg-cover bg-center bg-fixed opacity-40"
+				class="absolute inset-0 bg-cover bg-center bg-fixed opacity-80"
 				style="background-image: url('{heroImage}');"
 			></div>
-			<div class="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/60 to-zinc-950"></div>
+			
+			<div class="absolute inset-0 bg-gradient-to-b from-zinc-950/30 via-zinc-950/20 to-zinc-950"></div>
 		</div>
 
 		<div class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col">
-			<div class="flex items-center gap-4 mb-8" in:fly={{ y: 20, duration: 1000, delay: 200 }}>
-				<div class="h-px w-12 bg-teal-500"></div>
-				<span class="text-teal-400 text-xs font-black uppercase tracking-[0.4em]">Est. 2025</span>
+			<div class="flex items-center gap-4 mb-8 justify-center">
+				<div class="w-12 h-px bg-teal-400/50"></div>
+				<!-- Brightened to teal-300 and added a drop-shadow for contrast -->
+				<span class="text-teal-300 font-black tracking-[0.4em] text-xs uppercase drop-shadow-md">Est. 2025</span>
+				<div class="w-12 h-px bg-teal-400/50"></div>
 			</div>
 			
 			<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-tight" in:fly={{ y: 30, duration: 1000, delay: 400 }}>
