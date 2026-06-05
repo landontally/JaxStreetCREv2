@@ -34,6 +34,17 @@
 <svelte:head>
 	<title>{property.title || 'Property Details'} | Jax Street CRE</title>
 	<meta name="description" content="Commercial real estate listing for {property.title} located in {property.location}." />
+
+	<meta property="og:title" content="{property.title || 'Property Details'} | Jax Street CRE" />
+	<meta property="og:description" content="Commercial real estate listing for {property.title} located in {property.location}." />
+	<meta property="og:type" content="website" />
+	
+	{#if property.image}
+		<meta property="og:image" content={property.image} />
+		
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={property.image} />
+	{/if}
 </svelte:head>
 
 <section class="relative h-[70vh] flex flex-col justify-end px-6 md:px-12 pb-24 z-10 overflow-hidden bg-zinc-950">
