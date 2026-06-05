@@ -1,18 +1,24 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import 'leaflet/dist/leaflet.css';
+  // Import the base clustering CSS
+  import 'leaflet.markercluster/dist/MarkerCluster.css';
 
-  // Added `properties = []` to catch the prop passed from the Available/Leased pages
   let { propertyCoords, surroundingArea = [], directoryProperties = [], properties = [], activeLocation, propertyTitle } = $props();
-  
+
   let mapElement: HTMLElement;
   let map = $state<any>(null);
   let markers = $state<any>({});
   let L: any;
   let defaultBounds = $state<any>(null);
+  
+  // Save the cluster group to state so the flight animation can use it
+  let markerClusterGroup = $state<any>(null); 
 
   onMount(async () => {
     L = (await import('leaflet')).default;
+    // Load the clustering plugin onto the Leaflet (L) instance
+    await import('leaflet.markercluster'); 
 
     let m = L.map(mapElement, { zoomControl: false });
 
@@ -38,14 +44,32 @@
 
     let featureGroupArray: any[] = [];
 
-    // Combine arrays to make it foolproof regardless of what the parent page calls it
+    // --- INITIALIZE THE CLUSTER GROUP ---
+    const clusterGroup = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      maxClusterRadius: 50, // How close pins need to be to cluster
+      spiderfyOnMaxZoom: true,
+      // Create a gorgeous custom cluster bubble that matches your brand!
+      iconCreateFunction: function(cluster: any) {
+        const count = cluster.getChildCount();
+        return L.divIcon({
+          className: 'bg-transparent',
+          html: `<div class="w-10 h-10 bg-teal-600/90 backdrop-blur-sm rounded-full border-4 border-white shadow-xl flex items-center justify-center text-white font-bold text-sm hover:bg-teal-500 transition-colors">
+                  ${count}
+                 </div>`,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20]
+        });
+      }
+    });
+
     let dirProps = directoryProperties.length > 0 ? directoryProperties : properties;
 
-    // --- DIRECTORY MODE (Multiple Properties) ---
+    // --- DIRECTORY MODE ---
     if (dirProps.length > 0) {
       dirProps.forEach((prop: any) => {
         if (prop.coordinates?.lat && prop.coordinates?.lng) {
-          const marker = L.marker([prop.coordinates.lat, prop.coordinates.lng], { icon: mainIcon }).addTo(m)
+          const marker = L.marker([prop.coordinates.lat, prop.coordinates.lng], { icon: mainIcon })
             .bindPopup(`
               <div class="text-center flex flex-col gap-1">
                 <span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest">${prop.status || 'Property'}</span>
@@ -54,6 +78,8 @@
             `, customPopupOptions);
           
           markers[prop.slug] = marker;
+          // Add to cluster instead of the map
+          clusterGroup.addLayer(marker); 
           featureGroupArray.push(marker);
         }
       });
@@ -61,23 +87,28 @@
     // --- SINGLE PROPERTY MODE ---
     else {
       if (propertyCoords?.lat && propertyCoords?.lng) {
-        const mainMarker = L.marker([propertyCoords.lat, propertyCoords.lng], { icon: mainIcon }).addTo(m)
+        const mainMarker = L.marker([propertyCoords.lat, propertyCoords.lng], { icon: mainIcon })
           .bindPopup(`<div class="text-center flex flex-col gap-1"><span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest">Target Property</span><span class="text-sm font-bold text-zinc-950 leading-tight">${propertyTitle || 'Main Property'}</span></div>`, customPopupOptions);
         markers['main'] = mainMarker;
+        clusterGroup.addLayer(mainMarker);
         featureGroupArray.push(mainMarker);
       }
 
       surroundingArea.forEach((place: any) => {
         if (place.lat && place.lng && place.name) {
-          const marker = L.marker([place.lat, place.lng], { icon: smallIcon }).addTo(m)
+          const marker = L.marker([place.lat, place.lng], { icon: smallIcon })
             .bindPopup(`<div class="text-xs font-bold text-zinc-950 uppercase tracking-widest text-center">${place.name}</div>`, customPopupOptions);
           markers[place.name] = marker;
+          clusterGroup.addLayer(marker);
           featureGroupArray.push(marker);
         }
       });
     }
 
-    // Auto-frame the camera to fit all pins perfectly
+    // Add the fully loaded cluster group to the map!
+    m.addLayer(clusterGroup);
+    markerClusterGroup = clusterGroup;
+
     if (featureGroupArray.length > 0) {
       const group = L.featureGroup(featureGroupArray);
       defaultBounds = group.getBounds();
@@ -94,19 +125,22 @@
 
   // --- THE FLIGHT ANIMATION ---
   $effect(() => {
-    if (map) {
+    if (map && markerClusterGroup) {
       if (activeLocation) {
-        // Determine the target coordinates
         const lat = activeLocation.coordinates?.lat || activeLocation.lat;
         const lng = activeLocation.coordinates?.lng || activeLocation.lng;
 
         if (lat && lng) {
-          map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
-
-          // Try to open the popup using slug (properties) or name (businesses)
           const identifier = activeLocation.slug || activeLocation.name || 'main';
-          if (markers[identifier]) {
-            markers[identifier].openPopup();
+          const targetMarker = markers[identifier];
+
+          if (targetMarker) {
+            // zoomToShowLayer automatically flies to the cluster, breaks it open, and runs the callback!
+            markerClusterGroup.zoomToShowLayer(targetMarker, () => {
+              targetMarker.openPopup();
+            });
+          } else {
+             map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
           }
         }
       } else {
@@ -121,7 +155,11 @@
             animate: true,
             duration: 1.5
           });
-          if (markers['main']) markers['main'].openPopup();
+          if (markers['main']) {
+             markerClusterGroup.zoomToShowLayer(markers['main'], () => {
+                markers['main'].openPopup();
+             });
+          }
         }
       }
     }

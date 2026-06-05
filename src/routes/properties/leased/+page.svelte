@@ -3,7 +3,7 @@
     import InteractiveMap from '$lib/components/InteractiveMap.svelte';
 
     let { data } = $props();
-    let properties = data.properties;
+    let properties = data.properties || [];
 
     let activeLocation = $state(null);
     let isMobileMapOpen = $state(false);
@@ -12,36 +12,41 @@
     let sortBy = $state('addressAsc'); 
     let filterCity = $state('All');
 
-    // Automatically generate a unique list of cities based on your properties array
+    // Safely extract cities by filtering out any properties missing a location first!
     let availableCities = $derived(
-        ['All', ...new Set(properties.map((p: any) => p.location.split(',')[0].trim()))].sort()
+        ['All', ...new Set(properties
+            .filter((p: any) => p.location) 
+            .map((p: any) => p.location.split(',')[0].trim())
+        )].sort()
     );
 
     // Dynamically rebuild the list instantly whenever a dropdown changes
     let displayProperties = $derived.by(() => {
         let result = [...properties];
 
-        // 1. Apply City Filter
+        // 1. Apply City Filter (Safely)
         if (filterCity !== 'All') {
-            result = result.filter(p => p.location.split(',')[0].trim() === filterCity);
+            result = result.filter(p => p.location && p.location.split(',')[0].trim() === filterCity);
         }
 
-        // 2. Apply Sorting
+        // 2. Apply Sorting (Safely handling any missing titles or dates)
         result.sort((a, b) => {
             if (sortBy === 'newest') {
-                return new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime();
+                return new Date(b._createdAt || 0).getTime() - new Date(a._createdAt || 0).getTime();
             }
             if (sortBy === 'oldest') {
-                return new Date(a._createdAt).getTime() - new Date(b._createdAt).getTime();
+                return new Date(a._createdAt || 0).getTime() - new Date(b._createdAt || 0).getTime();
             }
             if (sortBy === 'addressAsc' || sortBy === 'addressDesc') {
-                const numA = parseInt(a.title) || 0; 
-                const numB = parseInt(b.title) || 0;
+                const titleA = a.title || '';
+                const titleB = b.title || '';
+                const numA = parseInt(titleA) || 0; 
+                const numB = parseInt(titleB) || 0;
                 
                 if (numA !== numB) {
                     return sortBy === 'addressAsc' ? numA - numB : numB - numA;
                 }
-                return sortBy === 'addressAsc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
+                return sortBy === 'addressAsc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA);
             }
             return 0;
         });
