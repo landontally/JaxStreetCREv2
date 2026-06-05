@@ -96,6 +96,16 @@
 <svelte:head>
 	<title>Jax Street CRE | Indiana Commercial Real Estate</title>
 	<meta name="description" content="Jax Street CRE is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
+
+	<meta property="og:title" content="Jax Street CRE | Indiana Commercial Real Estate" />
+	<meta property="og:description" content="Jax Street CRE is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
+	<meta property="og:type" content="website" />
+	
+	{#if heroImages && heroImages.length > 0}
+		<meta property="og:image" content={heroImages[0]} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={heroImages[0]} />
+	{/if}
 </svelte:head>
 
 <div class="bg-zinc-950 min-h-screen text-white selection:bg-teal-500 overflow-hidden">
