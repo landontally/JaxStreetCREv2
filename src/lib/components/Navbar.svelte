@@ -1,13 +1,32 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
+  import { page } from '$app/stores';
 
   let scrollY = $state(0);
   let isDrawerOpen = $state(false);
   let isMobileMenuOpen = $state(false);
+  
+  // --- SEARCH STATE ---
+  let isSearchOpen = $state(false);
+  let searchQuery = $state('');
 
-  // Lock scrolling if either the drawer OR the mobile menu is open
+  let searchResults = $derived.by(() => {
+      if (!searchQuery.trim()) return [];
+      const query = searchQuery.toLowerCase();
+      
+      return ($page.data.allProperties || []).filter((p: any) => {
+          const matchTitle = (p.title || '').toLowerCase().includes(query);
+          const matchLocation = (p.location || '').toLowerCase().includes(query);
+          const matchStatus = (p.status || '').toLowerCase().includes(query);
+          const matchTenants = (p.tenants || []).some((t: string) => t.toLowerCase().includes(query));
+          
+          return matchTitle || matchLocation || matchStatus || matchTenants;
+      });
+  });
+
+  // Lock scrolling if ANY overlay is open
   $effect(() => {
-    if (isDrawerOpen || isMobileMenuOpen) {
+    if (isDrawerOpen || isMobileMenuOpen || isSearchOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -15,12 +34,15 @@
   });
 </script>
 
-<svelte:window bind:scrollY />
+<svelte:window 
+  bind:scrollY 
+  onkeydown={(e) => { if (e.key === 'Escape') isSearchOpen = false; }} 
+/>
 
-<nav class="fixed top-0 left-0 w-full z-[60] transition-all duration-300 px-6 py-4 flex justify-between items-center {scrollY > 50 || isMobileMenuOpen ? 'bg-zinc-950/95 backdrop-blur-md shadow-lg border-b border-zinc-800' : 'bg-transparent'}">
+<nav class="fixed top-0 left-0 w-full z-[60] transition-all duration-300 px-6 py-4 flex justify-between items-center {scrollY > 50 || isMobileMenuOpen || isSearchOpen ? 'bg-zinc-950/95 backdrop-blur-md shadow-lg border-b border-zinc-800' : 'bg-transparent'}">
   
   <div class="flex items-center gap-3">
-    <a href="/" onclick={() => isMobileMenuOpen = false} class="flex items-center gap-3 group hover:opacity-80 transition-opacity">
+    <a href="/" onclick={() => {isMobileMenuOpen = false; isSearchOpen = false;}} class="flex items-center gap-3 group hover:opacity-80 transition-opacity">
       <img src="/logo-white.svg" alt="Jax Street Logo" class="w-8 h-8 md:w-9 md:h-9 object-contain shrink-0 group-hover:scale-105 transition-transform" />
       <span class="text-xl md:text-2xl font-bold tracking-widest uppercase text-white drop-shadow-md">
         Jax Street CRE
@@ -34,26 +56,83 @@
     <a href="/properties/available" class="relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-teal-400 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-right hover:after:origin-left hover:text-teal-400 transition-colors">Available</a>
     <a href="/properties/leased" class="relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-teal-400 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-right hover:after:origin-left hover:text-teal-400 transition-colors">Leased</a>
 
-    <button onclick={() => isDrawerOpen = true} class="bg-teal-600 hover:bg-teal-500 text-white px-5 py-2.5 rounded-sm transition-colors duration-300 ml-4 shadow-lg">
+    <button onclick={() => isSearchOpen = true} class="hover:text-teal-400 transition-colors ml-2" aria-label="Search Properties">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    </button>
+
+    <button onclick={() => isDrawerOpen = true} class="bg-teal-600 hover:bg-teal-500 text-white px-5 py-2.5 rounded-sm transition-colors duration-300 shadow-lg">
       Propose a Deal
     </button>
   </div>
 
-  <button 
-    class="lg:hidden text-white p-2 transition-colors hover:text-teal-400"
-    onclick={() => {
-      isMobileMenuOpen = !isMobileMenuOpen;
-      if (isMobileMenuOpen) isDrawerOpen = false; // close drawer if mobile menu opens
-    }}
-    aria-label="Toggle Menu"
-  >
-    {#if isMobileMenuOpen}
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-    {:else}
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-    {/if}
-  </button>
+  <div class="flex items-center gap-4 lg:hidden">
+    <button onclick={() => {isSearchOpen = true; isMobileMenuOpen = false;}} class="text-white hover:text-teal-400 transition-colors p-2" aria-label="Search Properties">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    </button>
+
+    <button 
+      class="text-white p-2 transition-colors hover:text-teal-400"
+      onclick={() => {
+        isMobileMenuOpen = !isMobileMenuOpen;
+        if (isMobileMenuOpen) { isDrawerOpen = false; isSearchOpen = false; }
+      }}
+      aria-label="Toggle Menu"
+    >
+      {#if isMobileMenuOpen}
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+      {:else}
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+      {/if}
+    </button>
+  </div>
 </nav>
+
+{#if isSearchOpen}
+  <div 
+    class="fixed inset-0 z-[100] bg-zinc-950/95 backdrop-blur-xl flex flex-col pt-28 px-6 md:px-12 pb-12"
+    transition:fade={{ duration: 250 }}
+  >
+    <button 
+      onclick={() => {isSearchOpen = false; searchQuery = '';}}
+      class="absolute top-6 right-6 md:top-8 md:right-12 text-zinc-400 hover:text-white transition-colors p-2 bg-white/5 rounded-full"
+      aria-label="Close search"
+    >
+      <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+
+    <div class="max-w-4xl mx-auto w-full flex flex-col gap-8 h-full">
+        <input 
+            type="text" 
+            bind:value={searchQuery} 
+            placeholder="Search cities, tenants, or status..." 
+            class="w-full bg-transparent border-b-2 border-zinc-700 focus:border-teal-500 text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white placeholder-zinc-700 outline-none pb-4 transition-colors"
+            autofocus
+        />
+
+        <div class="flex-grow overflow-y-auto custom-scrollbar flex flex-col gap-4 pr-2">
+            {#if searchQuery.trim() !== '' && searchResults.length === 0}
+                <p class="text-zinc-500 font-medium text-lg mt-8">No properties found matching "{searchQuery}"</p>
+            {/if}
+
+            {#each searchResults as result}
+                <a 
+                    href="/properties/{result.slug}" 
+                    onclick={() => { isSearchOpen = false; searchQuery = ''; }}
+                    class="flex items-center gap-6 p-4 rounded-sm hover:bg-zinc-900 transition-colors border border-transparent hover:border-zinc-800 group"
+                >
+                    <img src={result.image} alt={result.title} class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-sm shrink-0 shadow-md" />
+                    <div class="flex flex-col">
+                        <span class="text-teal-500 text-[10px] font-bold uppercase tracking-widest mb-1">{result.status} • {result.type}</span>
+                        <h3 class="text-xl md:text-2xl font-bold text-white group-hover:text-teal-400 transition-colors line-clamp-1">{result.title}</h3>
+                        <p class="text-zinc-400 text-sm md:text-base mt-1">{result.location}</p>
+                    </div>
+                </a>
+            {/each}
+        </div>
+    </div>
+  </div>
+{/if}
+
 
 {#if isMobileMenuOpen}
   <div 
@@ -69,7 +148,7 @@
       <button 
         onclick={() => {
           isMobileMenuOpen = false;
-          setTimeout(() => isDrawerOpen = true, 250); // Small delay allows menu to fade out before drawer slides in
+          setTimeout(() => isDrawerOpen = true, 250);
         }} 
         class="mt-4 bg-teal-600 hover:bg-teal-500 text-white px-10 py-4 rounded-sm transition-colors duration-300 shadow-lg text-sm md:text-base"
       >
@@ -156,7 +235,7 @@
 {/if}
 
 <style>
-  /* Light mode scrollbar for the textarea and drawer body */
+  /* Light mode scrollbar for the textarea, drawer body, and search results */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }

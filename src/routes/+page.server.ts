@@ -1,29 +1,47 @@
-import { client } from '$lib/sanity';
+import { client, urlFor } from '$lib/sanity';
 
 export async function load() {
-const propertiesQuery = `
+  // 1. Fetch the raw mainImage object instead of the resolved URL
+  const propertiesQuery = `
     *[_type == "property" && featured == true] | order(_createdAt desc)[0...5] {
       title,
       location,
-      "type": type->title, // <-- Add the arrow here!
+      "type": type->title,
       status,
       tenants,
-      "image": mainImage.asset->url,
+      mainImage, // <-- Ask for the raw object here
       "slug": slug.current
     }
   `;
 
+  // 2. Fetch the raw heroImages array
   const heroQuery = `
     *[_type == "homePage"][0] {
-      "images": heroImages[].asset->url
+      heroImages // <-- Ask for the raw array here
     }
   `;
 
   // Fetch both sets of data
-  const [properties, homePageData] = await Promise.all([
+  const [rawProperties, homePageData] = await Promise.all([
     client.fetch(propertiesQuery),
     client.fetch(heroQuery)
   ]);
+
+  // 3. Optimize property images (800px width for the carousel cards)
+  const properties = (rawProperties || []).map((prop: any) => ({
+    ...prop,
+    image: prop.mainImage 
+      ? urlFor(prop.mainImage).width(800).format('webp').url() 
+      : '/PLACEHOLDER.jpg'
+  }));
+
+  // 4. Optimize homepage hero images (1600px width for the fullscreen background)
+  let optimizedHeroImages = [];
+  if (homePageData && homePageData.heroImages && homePageData.heroImages.length > 0) {
+    optimizedHeroImages = homePageData.heroImages.map((img: any) => 
+      urlFor(img).width(1600).format('webp').url()
+    );
+  }
 
   // Our default fallback images
   const fallbackImages = [
@@ -32,15 +50,14 @@ const propertiesQuery = `
     "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop"
   ];
 
-  // Safely check if homePageData exists, and if it has an images array with items. 
+  // Safely check if we successfully generated optimized hero images. 
   // If not, send the fallbacks.
-  const safeHeroImages = (homePageData && homePageData.images && homePageData.images.length > 0) 
-    ? homePageData.images 
+  const safeHeroImages = optimizedHeroImages.length > 0 
+    ? optimizedHeroImages 
     : fallbackImages;
 
   return {
-    // Guarantee properties is an array
-    properties: properties || [],
+    properties,
     heroImages: safeHeroImages
   };
 }
