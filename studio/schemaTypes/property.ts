@@ -50,6 +50,12 @@ export default defineType({
       },
     }),
     defineField({
+      name: 'squareFootage',
+      title: 'Available Square Footage',
+      type: 'string',
+      description: 'e.g., 1,332 S/F',
+    }),
+    defineField({
       name: 'tenants',
       title: 'Tenant(s)',
       type: 'array',

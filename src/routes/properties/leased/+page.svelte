@@ -129,13 +129,15 @@
                                 <span class="text-teal-600 text-[9px] font-black uppercase tracking-widest block mb-1">
                                     {property.type || 'Retail'}
                                 </span>
-                                <h3 class="text-lg font-bold text-zinc-950 leading-tight mb-2 line-clamp-2">
-                                    {property.title}
-                                </h3>
-                                <p class="text-zinc-500 text-xs flex items-center gap-1.5 line-clamp-1">
-                                    <svg class="w-3 h-3 text-teal-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                    {property.location}
-                                </p>
+                                <a href="/properties/{property.slug}" class="block group/title cursor-pointer">
+                                    <h3 class="text-lg font-bold text-zinc-950 leading-tight mb-2 line-clamp-2">
+                                        {property.title}
+                                    </h3>
+                                    <p class="text-zinc-500 text-xs flex items-center gap-1.5 line-clamp-1">
+                                        <svg class="w-3 h-3 text-teal-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                        {property.location}
+                                    </p>
+                                </a>
                             </div>
                             
                             <div class="flex flex-wrap items-center justify-between gap-4 mt-auto pt-3 border-t border-zinc-100">

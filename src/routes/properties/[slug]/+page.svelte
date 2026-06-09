@@ -61,9 +61,11 @@
 			<span class="px-3 py-1.5 bg-teal-500/90 text-white text-[10px] font-black uppercase tracking-widest rounded-sm backdrop-blur-md shadow-lg">
 				{property.status || 'Available'}
 			</span>
-			<span class="text-zinc-200 font-bold uppercase tracking-[0.2em] text-[10px] bg-black/30 px-3 py-1.5 rounded-sm backdrop-blur-md">
-				{property.type || 'Commercial Space'}
-			</span>
+			{#if property.squareFootage}
+				<span class="text-zinc-200 font-bold uppercase tracking-[0.2em] text-[10px] bg-black/30 px-3 py-1.5 rounded-sm backdrop-blur-md">
+					{property.squareFootage}
+				</span>
+			{/if}
 		</div>
 		
 		<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white leading-[0.9] drop-shadow-2xl max-w-5xl mb-2">
@@ -275,10 +277,8 @@
 		100% { transform: translateX(-50%); }
 	}
 
-	@media (prefers-reduced-motion: no-preference) {
-		/* Fast speed for seamless scrolling */
-		.animate-marquee-fast {
-			animation: marquee-fast 22s linear infinite;
-		}
+	/* Removed the @media prefers-reduced-motion wrapper so it always plays */
+	.animate-marquee-fast {
+		animation: marquee-fast 22s linear infinite;
 	}
 </style>

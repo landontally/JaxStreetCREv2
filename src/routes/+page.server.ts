@@ -2,14 +2,15 @@ import { client, urlFor } from '$lib/sanity';
 
 export async function load() {
   // 1. Fetch the raw mainImage object instead of the resolved URL
-  const propertiesQuery = `
+const propertiesQuery = `
     *[_type == "property" && featured == true] | order(_createdAt desc)[0...5] {
       title,
       location,
       "type": type->title,
       status,
+      squareFootage, 
       tenants,
-      mainImage, // <-- Ask for the raw object here
+      mainImage,
       "slug": slug.current
     }
   `;

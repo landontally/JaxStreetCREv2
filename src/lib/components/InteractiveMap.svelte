@@ -123,7 +123,7 @@
     return () => { if (map) map.remove(); };
   });
 
-  // --- THE FLIGHT ANIMATION ---
+// --- THE FLIGHT ANIMATION ---
   $effect(() => {
     if (map && markerClusterGroup) {
       if (activeLocation) {
@@ -135,9 +135,14 @@
           const targetMarker = markers[identifier];
 
           if (targetMarker) {
-            // zoomToShowLayer automatically flies to the cluster, breaks it open, and runs the callback!
-            markerClusterGroup.zoomToShowLayer(targetMarker, () => {
-              targetMarker.openPopup();
+            // 1. First, perform the beautiful swoop
+            map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
+            
+            // 2. Wait for the camera to land, then break the cluster and open the popup!
+            map.once('moveend', () => {
+              markerClusterGroup.zoomToShowLayer(targetMarker, () => {
+                targetMarker.openPopup();
+              });
             });
           } else {
              map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
@@ -156,8 +161,10 @@
             duration: 1.5
           });
           if (markers['main']) {
-             markerClusterGroup.zoomToShowLayer(markers['main'], () => {
-                markers['main'].openPopup();
+             map.once('moveend', () => {
+               markerClusterGroup.zoomToShowLayer(markers['main'], () => {
+                  markers['main'].openPopup();
+               });
              });
           }
         }

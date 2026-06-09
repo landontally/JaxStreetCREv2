@@ -102,9 +102,9 @@
 	<meta property="og:type" content="website" />
 	
 	{#if heroImages && heroImages.length > 0}
-		<meta property="og:image" content={heroImages[0]} />
+		<meta property="og:image" content="/logo-white.svg" />
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:image" content={heroImages[0]} />
+		<meta name="twitter:image" content="/logo-white.svg" />
 	{/if}
 </svelte:head>
 
@@ -141,9 +141,10 @@
 		
 		<div class="relative z-20 w-full max-w-7xl mx-auto flex flex-col items-start mt-20">
 			
-			<div use:reveal class="flex items-center gap-4 mb-8">
-				<div class="h-px w-12 bg-teal-500"></div>
-				<span class="text-teal-400 text-xs font-black uppercase tracking-[0.4em]">Indiana Commercial Real Estate</span>
+			<div use:reveal class="w-full flex items-center justify-center gap-4 mb-12">
+				<div class="hidden sm:block h-px w-8 md:w-12 bg-teal-500"></div>
+				<span class="text-teal-400 text-[10px] md:text-xs font-black uppercase tracking-[0.4em] drop-shadow-md text-center">Indiana Commercial Real Estate</span>
+				<div class="hidden sm:block h-px w-8 md:w-12 bg-teal-500"></div>
 			</div>
 
 			<h1 class="text-4xl md:text-6xl lg:text-[7rem] font-bold tracking-tighter leading-[0.9] uppercase mb-8">
@@ -167,7 +168,7 @@
 			</div>
 		</div>
 
-		<div use:reveal class="absolute bottom-12 left-6 md:left-12 flex flex-col items-center gap-4 z-20">
+		<div use:reveal class="absolute bottom-12 right-6 md:right-12 flex flex-col items-center gap-4 z-20">
 			<span class="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-500 rotate-180" style="writing-mode: vertical-rl;">Scroll</span>
 			<div class="w-px h-16 bg-gradient-to-b from-zinc-500 to-transparent"></div>
 		</div>
@@ -225,10 +226,19 @@
 								
 								<div class="absolute bottom-0 left-0 w-full p-4 sm:p-6 md:p-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
 									<div class="flex-grow">
-										<span class="inline-block bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm mb-2 sm:mb-4 backdrop-blur-md">
-											{property.status}
-										</span>
-									<h3 class="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-tight mb-1 sm:mb-2 line-clamp-2">
+										<div class="flex flex-wrap items-center gap-2 mb-2 sm:mb-4">
+											<span class="inline-block bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm backdrop-blur-md">
+												{property.status}
+											</span>
+											
+											{#if property.squareFootage}
+												<span class="inline-block bg-zinc-900/80 text-zinc-300 border border-zinc-700/50 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm backdrop-blur-md">
+													{property.squareFootage}
+												</span>
+											{/if}
+										</div>
+										
+										<h3 class="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-tight mb-1 sm:mb-2 line-clamp-2">
 											{property.title}
 										</h3>
 										
@@ -243,7 +253,6 @@
 												{property.tenants.join(', ')}
 											</p>
 										{/if}
-
 									</div>
 									
 									<a href="/properties/{property.slug}" onclick={(e) => { if(isDragging) e.preventDefault(); e.stopPropagation(); }} class="shrink-0 flex justify-center items-center gap-4 group/btn bg-white/10 hover:bg-white border border-white/20 hover:border-white backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-sm transition-all duration-300 cursor-pointer mt-2 md:mt-0">

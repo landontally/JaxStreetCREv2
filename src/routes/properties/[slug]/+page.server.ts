@@ -8,6 +8,7 @@ export async function load({ params }) {
         title,
         location,
         status,
+        squareFootage,
         "type": type->title,
         description,
         highlights,
