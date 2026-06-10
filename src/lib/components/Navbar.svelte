@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
   import { page } from '$app/stores';
+  import InteractiveMap from '$lib/components/InteractiveMap.svelte'; // <-- Add this import
 
   let scrollY = $state(0);
   let isDrawerOpen = $state(false);
@@ -208,28 +209,15 @@
         </div>
       </div>
 
-      <form name="propose-deal" method="POST" data-netlify="true" class="flex flex-col gap-5">
-        <input type="hidden" name="form-name" value="propose-deal" />
-        <div class="flex flex-col gap-1.5">
-          <label for="name" class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">Name</label>
-          <input type="text" id="name" name="name" required class="w-full bg-zinc-50 border border-zinc-200 rounded-sm px-4 py-3.5 text-sm text-zinc-950 placeholder-zinc-400 focus:bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-all shadow-sm" placeholder="John Doe" />
+    <div class="flex flex-col gap-3 mt-2 pb-8 flex-grow">
+        <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">Our Indiana Footprint</h3>
+        <div class="w-full min-h-[300px] flex-grow bg-zinc-100 rounded-sm border border-zinc-200 overflow-hidden relative z-0 shadow-inner">
+            <InteractiveMap properties={$page.data.allProperties || []} />
         </div>
-        
-        <div class="flex flex-col gap-1.5">
-          <label for="email" class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">Email</label>
-          <input type="email" id="email" name="email" required class="w-full bg-zinc-50 border border-zinc-200 rounded-sm px-4 py-3.5 text-sm text-zinc-950 placeholder-zinc-400 focus:bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-all shadow-sm" placeholder="john@example.com" />
-        </div>
-        
-        <div class="flex flex-col gap-1.5">
-          <label for="message" class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">Message Details</label>
-          <textarea id="message" name="message" rows="4" required class="w-full bg-zinc-50 border border-zinc-200 rounded-sm px-4 py-3 text-sm text-zinc-950 placeholder-zinc-400 focus:bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-all shadow-sm resize-none custom-scrollbar" placeholder="Tell us about your needs..."></textarea>
-        </div>
-
-        <button type="submit" class="mt-4 w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 rounded-sm uppercase tracking-widest text-xs transition-colors shadow-md hover:shadow-lg flex justify-center items-center gap-2">
-          Send Message
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-        </button>
-      </form>
+        <p class="text-[10px] text-zinc-400 font-medium mt-1 text-center uppercase tracking-widest">
+            Serving the greater Indiana markets
+        </p>
+      </div>
     </div>
   </div>
 {/if}

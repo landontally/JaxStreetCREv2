@@ -1,0 +1,51 @@
+import { client } from '$lib/sanity';
+
+export async function GET() {
+  // Fetch all property slugs and their last updated dates
+  const query = `
+    *[_type == "property"] {
+      "slug": slug.current,
+      _updatedAt
+    }
+  `;
+
+  const properties = await client.fetch(query);
+  const websiteUrl = 'https://jaxstreetcre.com'; // Change this if your domain is different!
+
+  // Build the XML string
+  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+  sitemap += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+  // 1. Add the static pages
+  const staticPages = ['', '/about', '/properties/available', '/properties/leased'];
+  for (const page of staticPages) {
+    sitemap += `  <url>\n`;
+    sitemap += `    <loc>${websiteUrl}${page}</loc>\n`;
+    sitemap += `    <changefreq>weekly</changefreq>\n`;
+    sitemap += `    <priority>${page === '' ? '1.0' : '0.8'}</priority>\n`;
+    sitemap += `  </url>\n`;
+  }
+
+  // 2. Add all the dynamic property pages
+  if (properties && properties.length > 0) {
+    for (const property of properties) {
+      if (!property.slug) continue;
+      sitemap += `  <url>\n`;
+      sitemap += `    <loc>${websiteUrl}/properties/${property.slug}</loc>\n`;
+      sitemap += `    <lastmod>${property._updatedAt}</lastmod>\n`;
+      sitemap += `    <changefreq>daily</changefreq>\n`;
+      sitemap += `    <priority>0.9</priority>\n`;
+      sitemap += `  </url>\n`;
+    }
+  }
+
+  sitemap += `</urlset>`;
+
+  // Return the XML with the correct headers so browsers and Google know what it is
+  return new Response(sitemap, {
+    headers: {
+      'Content-Type': 'application/xml',
+      'Cache-Control': 'max-age=0, s-maxage=3600'
+    }
+  });
+}
