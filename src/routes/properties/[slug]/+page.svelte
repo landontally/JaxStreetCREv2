@@ -41,10 +41,25 @@
 	
 	{#if property.image}
 		<meta property="og:image" content={property.image} />
-		
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:image" content={property.image} />
 	{/if}
+
+	<script type="application/ld+json">
+		{JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "RealEstateListing",
+			"name": property.title || "Commercial Property",
+			"description": property.description || `Commercial space located in ${property.location}`,
+			"image": property.image ? [property.image] : [],
+			"url": `https://jaxstreetcre.com/properties/${property.slug}`,
+			"datePosted": property._createdAt,
+			"offers": {
+				"@type": "Offer",
+				"availability": property.status === "Available" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+			}
+		})}
+	</script>
 </svelte:head>
 
 <section class="relative h-[70vh] flex flex-col justify-end px-6 md:px-12 pb-24 z-10 overflow-hidden bg-zinc-950">
