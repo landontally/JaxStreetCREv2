@@ -1,7 +1,11 @@
 import { client, urlFor } from '$lib/sanity';
 
-export async function load() {
-  // Fetch properties where status is exactly '100% Leased'
+export async function load({ setHeaders }) {
+  
+  setHeaders({
+    'Cache-Control': 'public, max-age=300, s-maxage=300'
+  });
+
   const query = `
     *[_type == "property" && status == "100% Leased"] | order(_createdAt desc) {
       title,

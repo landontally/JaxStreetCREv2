@@ -9,8 +9,29 @@
     let isMobileMapOpen = $state(false);
 
     // --- SORT & FILTER STATE ---
-    let sortBy = $state('addressAsc'); // 'newest', 'oldest', 'addressAsc', 'addressDesc'
+    let sortBy = $state('addressAsc'); 
     let filterCity = $state('All');
+
+    // --- NEW: SVELTEKIT SNAPSHOT FOR SCROLL MEMORY ---
+    let listContainer = $state<HTMLElement>();
+
+    export const snapshot = {
+        capture: () => {
+            return {
+                scrollY: listContainer ? listContainer.scrollTop : 0,
+                savedCity: filterCity,
+                savedSort: sortBy
+            };
+        },
+        restore: (state) => {
+            filterCity = state.savedCity;
+            sortBy = state.savedSort;
+            // Wait a tiny fraction of a second for the list to render, then scroll to the exact spot!
+            setTimeout(() => {
+                if (listContainer) listContainer.scrollTop = state.scrollY;
+            }, 10);
+        }
+    };
 
     // Automatically generate a unique list of cities based on your properties array
     let availableCities = $derived(
@@ -107,8 +128,7 @@
 
     <div class="flex flex-col lg:flex-row flex-grow h-[800px] max-h-[75vh]">
         
-        <div class="w-full lg:w-[450px] xl:w-[500px] h-full overflow-y-auto bg-white p-4 md:p-6 flex flex-col gap-4 custom-scrollbar shrink-0 relative z-10">
-            
+        <div bind:this={listContainer} class="w-full lg:w-[450px] xl:w-[500px] h-full overflow-y-auto bg-white p-4 md:p-6 flex flex-col gap-4 custom-scrollbar shrink-0 relative z-10">            
             {#if displayProperties.length > 0}
                 {#each displayProperties as property}
                     <div class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg">

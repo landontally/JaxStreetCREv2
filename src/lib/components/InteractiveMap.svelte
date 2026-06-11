@@ -15,18 +15,21 @@
   // Save the cluster group to state so the flight animation can use it
   let markerClusterGroup = $state<any>(null); 
 
-  onMount(async () => {
-    L = (await import('leaflet')).default;
-    // Load the clustering plugin onto the Leaflet (L) instance
-    await import('leaflet.markercluster'); 
+  onMount(() => {
+    // Wrap the heavy map generation in a tiny 50ms delay.
+    // This allows Svelte to instantly render the page transition, 
+    // and THEN build the map behind the scenes!
+    const timer = setTimeout(async () => {
+      L = (await import('leaflet')).default;
+      await import('leaflet.markercluster'); 
 
-    let m = L.map(mapElement, { zoomControl: false });
+      let m = L.map(mapElement, { zoomControl: false });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 20
-    }).addTo(m);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 20
+      }).addTo(m);
 
     const customPopupOptions = { className: 'jax-popup', closeButton: false };
 
@@ -118,9 +121,15 @@
     }
 
     setTimeout(() => { m.invalidateSize(); }, 100);
-    map = m;
+      map = m;
 
-    return () => { if (map) map.remove(); };
+    }, 50); // <-- The 50ms delay
+
+    // Ensure we clean up the timer and the map if the user leaves the page too fast
+    return () => { 
+      clearTimeout(timer);
+      if (map) map.remove(); 
+    };
   });
 
 // --- THE FLIGHT ANIMATION ---

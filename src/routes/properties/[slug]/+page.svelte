@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	let { data } = $props();
-	let property = data.property || {};
+	let property = data?.property || {};
 
 	let selectedImage = $state<string | null>(null);
 	let activeLocation = $state<any>(null);
@@ -13,6 +13,12 @@
 	let surroundingArea = property.surroundingArea || [];
 	let marqueeItems = [...surroundingArea, ...surroundingArea, ...surroundingArea, ...surroundingArea];
 
+	// --- NEW: Safely extract numbers to power the dynamic population bar chart ---
+	let pop1 = $derived(parseInt((property.demographics?.population1mi || '0').replace(/\D/g, '')) || 0);
+	let pop3 = $derived(parseInt((property.demographics?.population3mi || '0').replace(/\D/g, '')) || 0);
+	let pop5 = $derived(parseInt((property.demographics?.population5mi || '0').replace(/\D/g, '')) || 0);
+	let maxPop = $derived(Math.max(pop1, pop3, pop5, 1)); // Prevents division by zero errors
+
 	// --- CUSTOM REVEAL ACTION ---
 	function reveal(node: HTMLElement) {
 		node.classList.add('opacity-0', 'translate-y-16', 'transition-all', 'duration-[1200ms]', 'ease-out');
@@ -20,10 +26,65 @@
 			entries.forEach(entry => {
 				if (entry.isIntersecting) {
 					node.classList.remove('opacity-0', 'translate-y-16');
-					node.classList.add('opacity-100', 'translate-y-0');
+					// ADDED 'is-revealed' RIGHT HERE:
+					node.classList.add('opacity-100', 'translate-y-0', 'is-revealed');
 					observer.unobserve(node);
 				}
 			});
+		}, { threshold: 0.1 });
+
+		observer.observe(node);
+		return { destroy() { observer.disconnect(); } };
+	}
+
+	// --- CUSTOM COUNT-UP ACTION ---
+	function countUp(node: HTMLElement) {
+		const originalText = node.innerText.trim();
+		// Extract prefix (like $), the number (like 12,500 or 38.4), and suffix (like k)
+		const match = originalText.match(/^([^\d]*)(\d+(?:,\d+)*(?:\.\d+)?)([^\d]*)$/);
+		
+		if (!match) return;
+
+		const prefix = match[1];
+		const numberStr = match[2].replace(/,/g, '');
+		const suffix = match[3];
+		const isFloat = numberStr.includes('.');
+		const target = parseFloat(numberStr);
+
+		node.innerText = `${prefix}0${suffix}`;
+
+		const observer = new IntersectionObserver((entries) => {
+			if (entries[0].isIntersecting) {
+				let start: number | null = null;
+				const duration = 2000; // 2 seconds
+
+				const step = (timestamp: number) => {
+					if (!start) start = timestamp;
+					const progress = Math.min((timestamp - start) / duration, 1);
+					
+					// Smooth ease-out function so it slows down as it reaches the end
+					const easeProgress = 1 - Math.pow(1 - progress, 4);
+					const current = easeProgress * target;
+
+					let currentStr;
+					if (isFloat) {
+						currentStr = current.toFixed(1);
+					} else {
+						currentStr = Math.floor(current).toLocaleString();
+					}
+
+					node.innerText = `${prefix}${currentStr}${suffix}`;
+
+					if (progress < 1) {
+						window.requestAnimationFrame(step);
+					} else {
+						node.innerText = originalText; // Snap to exact original string at the end
+					}
+				};
+				
+				window.requestAnimationFrame(step);
+				observer.unobserve(node);
+			}
 		}, { threshold: 0.1 });
 
 		observer.observe(node);
@@ -195,6 +256,65 @@
 	</div>
 </section>
 
+
+{#if property.demographics && (property.demographics.trafficCount || property.demographics.medianIncome || property.demographics.totalPopulation)}
+	<section class="bg-white border-t border-zinc-200 py-24 relative overflow-hidden z-20">
+		<div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+			<div use:reveal class="mb-12 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
+				<div>
+					<div class="flex items-center justify-center md:justify-start gap-4 mb-4">
+						<div class="h-1 w-8 bg-teal-500"></div>
+						<h3 class="text-3xl font-bold text-zinc-950 tracking-tight">Market Demographics</h3>
+					</div>
+					<p class="text-zinc-500 font-medium">Key insights and traffic data for the surrounding area.</p>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+				{#if property.demographics.trafficCount}
+					<div use:reveal class="group bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm p-8 flex flex-col justify-center items-center text-center shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+						<span class="text-teal-600 font-black uppercase tracking-widest text-[10px] mb-3 group-hover:scale-105 transition-transform">Vehicles Per Day</span>
+						<span class="text-4xl lg:text-5xl font-bold text-zinc-950 mb-1 tracking-tighter" use:countUp>{property.demographics.trafficCount}</span>
+						<span class="text-zinc-400 text-xs font-medium uppercase tracking-wider">VPD</span>
+					</div>
+				{/if}
+
+				{#if property.demographics.medianIncome}
+					<div use:reveal class="group bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm p-8 flex flex-col justify-center items-center text-center shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+						<span class="text-teal-600 font-black uppercase tracking-widest text-[10px] mb-3 group-hover:scale-105 transition-transform">Median Income</span>
+						<span class="text-4xl lg:text-5xl font-bold text-zinc-950 mb-1 tracking-tighter" use:countUp>{property.demographics.medianIncome}</span>
+						<span class="text-zinc-400 text-xs font-medium uppercase tracking-wider">Household</span>
+					</div>
+				{/if}
+
+				{#if property.demographics.totalPopulation || property.demographics.totalHouseholds || property.demographics.medianAge}
+					<div use:reveal class="lg:col-span-2 bg-zinc-950 text-white border border-zinc-800 rounded-sm p-8 shadow-xl relative overflow-hidden flex flex-col justify-center group hover:border-teal-500/50 transition-colors duration-500">
+						<div class="absolute -right-16 -top-16 w-48 h-48 bg-teal-500/10 blur-3xl rounded-full pointer-events-none group-hover:bg-teal-500/20 transition-colors duration-700"></div>
+						
+						<span class="text-teal-400 font-black uppercase tracking-widest text-[10px] mb-8 text-center md:text-left relative z-10">Area Overview</span>
+						
+						<div class="grid grid-cols-3 gap-4 relative z-10 mt-2">
+							<div class="flex flex-col items-center md:items-start group/stat">
+								<span class="text-2xl lg:text-4xl font-bold text-white mb-2 tracking-tighter group-hover/stat:-translate-y-1 transition-transform" use:countUp>{property.demographics.totalPopulation || '-'}</span>
+								<span class="text-zinc-500 text-[9px] font-bold uppercase tracking-widest">Population</span>
+							</div>
+							<div class="flex flex-col items-center md:items-start md:border-l md:border-white/10 md:pl-8 group/stat">
+								<span class="text-2xl lg:text-4xl font-bold text-white mb-2 tracking-tighter group-hover/stat:-translate-y-1 transition-transform" use:countUp>{property.demographics.totalHouseholds || '-'}</span>
+								<span class="text-zinc-500 text-[9px] font-bold uppercase tracking-widest">Households</span>
+							</div>
+							<div class="flex flex-col items-center md:items-start md:border-l md:border-white/10 md:pl-8 group/stat">
+								<span class="text-2xl lg:text-4xl font-bold text-white mb-2 tracking-tighter group-hover/stat:-translate-y-1 transition-transform" use:countUp>{property.demographics.medianAge || '-'}</span>
+								<span class="text-zinc-500 text-[9px] font-bold uppercase tracking-widest">Median Age</span>
+							</div>
+						</div>
+					</div>
+				{/if}
+			</div>
+		</div>
+	</section>
+{/if}
+
+
 <section class="bg-zinc-50 border-t border-zinc-200 pt-12 pb-24 md:pb-32 overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 relative z-10">
         
@@ -222,7 +342,7 @@
                     <div class="absolute left-0 w-12 md:w-24 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
                     <div class="absolute right-0 w-12 md:w-24 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
                     
-                    <div class="flex animate-marquee-fast pause-on-hover w-max">
+                    <div class="flex animate-marquee-fast w-max">
                         {#each marqueeItems as business}
                             <button 
                                 onclick={() => activeLocation = business}
@@ -235,14 +355,12 @@
                 </div>
             </div>
         {/if}
-        
+    
 		<div class="w-full h-[400px] md:h-[500px] bg-zinc-100 rounded-sm border border-zinc-200 flex items-center justify-center overflow-hidden shadow-xl relative">
             {#if property.coordinates && property.coordinates.lat && property.coordinates.lng}
                 <InteractiveMap 
                     propertyCoords={property.coordinates} 
-                    
                     surroundingArea={property.surroundingArea || []} 
-                    
                     activeLocation={activeLocation}
                     propertyTitle={property.title} 
                 />
@@ -255,6 +373,54 @@
         </div>
     </div>
 </section>
+
+{#if data?.recommendations && data.recommendations.length > 0}
+	<section class="bg-zinc-950 border-t border-zinc-900 py-16 md:py-20 relative overflow-hidden">
+		
+		<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-32 bg-teal-500/5 blur-[100px] pointer-events-none"></div>
+
+		<div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+			<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12" use:reveal>
+				<div>
+					<h2 class="text-4xl md:text-5xl font-bold text-white tracking-tighter mb-3">
+						Other {(property.status || '').toLowerCase().includes('leased') ? 'Past Deals' : 'Available Spaces'}
+					</h2>
+					<p class="text-zinc-400 font-medium text-lg">Explore similar properties in the market.</p>
+				</div>
+				<a href={(property.status || '').toLowerCase().includes('leased') ? '/properties/leased' : '/properties/available'} class="group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-white hover:text-teal-400 transition-colors bg-white/5 hover:bg-white/10 px-6 py-4 rounded-sm border border-white/10">
+					View All {(property.status || '').toLowerCase().includes('leased') ? 'Leased' : 'Available'} 
+					<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+				</a>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+				{#each data.recommendations as rec}
+					<a href="/properties/{rec.slug}" class="group flex flex-col bg-zinc-900 hover:bg-white border border-zinc-800 hover:border-transparent rounded-sm overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl" use:reveal>
+						
+						<div class="w-full h-48 md:h-56 relative overflow-hidden bg-zinc-950">
+							<img src={rec.image} alt={rec.title} class="absolute inset-0 w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
+							
+							<div class="absolute top-4 left-4 bg-zinc-950/90 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm shadow-lg border border-white/10">
+								{rec.distance === 9999 ? 'Indiana Market' : `${rec.distance.toFixed(1)} miles away`}
+							</div>
+						</div>
+						
+						<div class="p-6 md:p-8 flex flex-col flex-grow relative transition-colors duration-500">
+							<span class="text-teal-500 group-hover:text-teal-600 text-[10px] font-black uppercase tracking-widest block mb-2 transition-colors duration-500">{rec.type || 'Retail'}</span>
+							
+							<h3 class="text-2xl font-bold text-white group-hover:text-zinc-950 leading-tight mb-2 transition-colors duration-500 line-clamp-2">{rec.title}</h3>
+							
+							<p class="text-zinc-400 group-hover:text-zinc-500 text-sm flex items-center gap-2 mt-auto pt-6 border-t border-zinc-800 group-hover:border-zinc-200 transition-colors duration-500">
+								<svg class="w-4 h-4 text-zinc-500 group-hover:text-teal-500 transition-colors duration-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+								<span class="truncate">{rec.location}</span>
+							</p>
+						</div>
+					</a>
+				{/each}
+			</div>
+		</div>
+	</section>
+{/if}
 
 <svelte:window onkeydown={(e) => { if (e.key === 'Escape' && selectedImage) selectedImage = null; }} />
 
@@ -283,16 +449,11 @@
 {/if}
 
 <style>
-	.pause-on-hover:hover {
-		animation-play-state: paused;
-	}
-
 	@keyframes marquee-fast {
 		0% { transform: translateX(0); }
 		100% { transform: translateX(-50%); }
 	}
 
-	/* Removed the @media prefers-reduced-motion wrapper so it always plays */
 	.animate-marquee-fast {
 		animation: marquee-fast 22s linear infinite;
 	}

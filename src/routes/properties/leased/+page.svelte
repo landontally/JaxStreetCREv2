@@ -12,6 +12,26 @@
     let sortBy = $state('addressAsc'); 
     let filterCity = $state('All');
 
+    // --- NEW: SVELTEKIT SNAPSHOT FOR SCROLL MEMORY ---
+    let listContainer = $state<HTMLElement>();
+
+    export const snapshot = {
+        capture: () => {
+            return {
+                scrollY: listContainer ? listContainer.scrollTop : 0,
+                savedCity: filterCity,
+                savedSort: sortBy
+            };
+        },
+        restore: (state) => {
+            filterCity = state.savedCity;
+            sortBy = state.savedSort;
+            setTimeout(() => {
+                if (listContainer) listContainer.scrollTop = state.scrollY;
+            }, 10);
+        }
+    };
+
     // Safely extract cities by filtering out any properties missing a location first!
     let availableCities = $derived(
         ['All', ...new Set(properties
@@ -110,8 +130,8 @@
 
     <div class="flex flex-col lg:flex-row flex-grow h-[800px] max-h-[75vh]">
         
-        <div class="w-full lg:w-[450px] xl:w-[500px] h-full overflow-y-auto bg-white p-4 md:p-6 flex flex-col gap-4 custom-scrollbar shrink-0 relative z-10">
-            
+        <div bind:this={listContainer} class="w-full lg:w-[450px] xl:w-[500px] h-full overflow-y-auto bg-white p-4 md:p-6 flex flex-col gap-4 custom-scrollbar shrink-0 relative z-10">
+
             {#if displayProperties.length > 0}
                 {#each displayProperties as property}
                     <div class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg">
@@ -152,7 +172,7 @@
                                 </button>
                                 
                                 <a 
-                                    href="/properties/{property.slug}" 
+                                    href="/properties/{property.slug}"
                                     class="text-[10px] font-bold uppercase text-zinc-500 hover:text-zinc-950 transition-colors flex items-center gap-1 tracking-widest ml-auto"
                                 >
                                     Full Details

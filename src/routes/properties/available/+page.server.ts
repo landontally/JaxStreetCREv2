@@ -1,7 +1,13 @@
 import { client, urlFor } from '$lib/sanity';
 
-export async function load() {
-  // 1. Notice we are fetching "mainImage" instead of "mainImage.asset->url"
+// 1. Add setHeaders to the load function parameters
+export async function load({ setHeaders }) {
+  
+  // 2. Tell the browser to cache this data for 5 minutes (300 seconds)
+  setHeaders({
+    'Cache-Control': 'public, max-age=300, s-maxage=300'
+  });
+
   const propertiesQuery = `
       *[_type == "property" && status == "Available"] | order(_createdAt desc) {
         title,

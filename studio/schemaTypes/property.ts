@@ -120,6 +120,20 @@ export default defineType({
       ]
     }),
     defineField({
+      name: 'demographics',
+      title: 'Demographics & Traffic',
+      type: 'object',
+      description: 'Optional. Add market data here to display a Demographics Dashboard.',
+      fields: [
+        { name: 'trafficCount', type: 'string', title: 'Vehicles Per Day (VPD)' },
+        { name: 'medianIncome', type: 'string', title: 'Median Household Income' },
+        // --- NEW FIELDS ---
+        { name: 'totalPopulation', type: 'string', title: 'Total Population (Zip/City)' },
+        { name: 'totalHouseholds', type: 'string', title: 'Total Households' },
+        { name: 'medianAge', type: 'string', title: 'Median Age' }
+      ]
+    }),
+    defineField({
       name: 'gallery',
       title: 'Image Gallery',
       type: 'array',
