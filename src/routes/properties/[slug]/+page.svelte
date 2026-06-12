@@ -199,7 +199,7 @@
 							<h3 class="text-2xl font-bold mb-2">Property Brochure</h3>
 							<p class="text-zinc-400">Download the full PDF prospectus for more information.</p>
 						</div>
-						<a href={property.brochureUrl} target="_blank" class="relative z-10 shrink-0 bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 px-8 rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest text-xs">
+						<a href={property.brochureUrl} target="_blank" aria-label="Download brochure PDF (opens in a new tab)" class="relative z-10 shrink-0 bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 px-8 rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest text-xs">
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
 							Download PDF
 						</a>
@@ -217,7 +217,7 @@
 									aria-label="Enlarge image"
 								>
 									<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors z-10"></div>
-									<img src={img} alt="Property view" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+									<img src={img} alt="Property view" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
 								</button>
 							{/each}
 						</div>

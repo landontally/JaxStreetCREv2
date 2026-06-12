@@ -72,12 +72,11 @@
 
     let featureGroupArray: any[] = [];
 
-    // --- INITIALIZE THE CLUSTER GROUP ---
+// --- INITIALIZE THE CLUSTER GROUP ---
     const clusterGroup = L.markerClusterGroup({
       showCoverageOnHover: false,
-      maxClusterRadius: 50, // How close pins need to be to cluster
+      maxClusterRadius: 50, 
       spiderfyOnMaxZoom: true,
-      // Create a gorgeous custom cluster bubble that matches your brand!
       iconCreateFunction: function(cluster: any) {
         const count = cluster.getChildCount();
         return L.divIcon({
@@ -93,32 +92,34 @@
 
     let dirProps = directoryProperties.length > 0 ? directoryProperties : properties;
 
-        // --- DIRECTORY MODE ---
-        if (dirProps.length > 0) {
-          dirProps.forEach((prop: any) => {
-            if (prop.coordinates?.lat && prop.coordinates?.lng) {
-              
-              // +++ NEW: CONDITIONAL LINK FOR PROPOSE DRAWER +++
-              let linkHtml = (mapVariant === 'propose' && prop.slug)
-                ? `<a href="/properties/${prop.slug}" class="mt-2 pt-2 border-t border-zinc-100 text-xs font-bold text-teal-600 hover:text-teal-700 block">View Property Details &rarr;</a>`
-                : '';
+    // --- DIRECTORY MODE (Available/Leased Pages & Drawer) ---
+    if (dirProps.length > 0) {
+      dirProps.forEach((prop: any) => {
+        if (prop.coordinates?.lat && prop.coordinates?.lng) {
+          
+          // The link now generates for ALL map variants, making it highly accessible!
+          let linkHtml = prop.slug
+            ? `<a href="/properties/${prop.slug}" class="mt-2 pt-2 border-t border-zinc-100 text-xs font-bold text-teal-600 hover:text-teal-700 block">View Property Details &rarr;</a>`
+            : '';
 
-              const marker = L.marker([prop.coordinates.lat, prop.coordinates.lng], { icon: mainIcon })
-                .bindPopup(`
-                  <div class="text-center flex flex-col gap-1">
-                    <span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest">${prop.status || 'Property'}</span>
-                    <span class="text-sm font-bold text-zinc-950 leading-tight">${prop.title}</span>
-                    ${linkHtml}
-                  </div>
-                `, customPopupOptions);
-              
-              markers[prop.slug] = marker;
-              clusterGroup.addLayer(marker); 
-              featureGroupArray.push(marker);
-            }
-          });
-        } 
-    // --- SINGLE PROPERTY MODE ---
+          const marker = L.marker([prop.coordinates.lat, prop.coordinates.lng], { icon: mainIcon })
+            .bindPopup(`
+              <div class="text-center flex flex-col gap-1">
+                <span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest">${prop.status || 'Property'}</span>
+                
+                <a href="/properties/${prop.slug}" class="text-sm font-bold text-zinc-950 hover:text-teal-600 transition-colors leading-tight">${prop.title}</a>
+                
+                ${linkHtml}
+              </div>
+            `, customPopupOptions);
+          
+          markers[prop.slug] = marker;
+          clusterGroup.addLayer(marker);
+          featureGroupArray.push(marker);
+        }
+      });
+    } 
+    // --- SINGLE PROPERTY MODE (Individual Property Pages) ---
     else {
       if (propertyCoords?.lat && propertyCoords?.lng) {
         const mainMarker = L.marker([propertyCoords.lat, propertyCoords.lng], { icon: mainIcon })
@@ -140,22 +141,22 @@
     }
 
     // Add the fully loaded cluster group to the map!
-        m.addLayer(clusterGroup);
-        markerClusterGroup = clusterGroup;
+    m.addLayer(clusterGroup);
+    markerClusterGroup = clusterGroup;
 
-        // +++ NEW: CONDITIONAL MAP CENTERING +++
-        if (mapVariant === 'propose') {
-          // Center directly on Indiana and zoom out
-          m.setView([39.7684, -86.1581], 7);
-        } else if (featureGroupArray.length > 0) {
-          const group = L.featureGroup(featureGroupArray);
-          defaultBounds = group.getBounds();
-          m.fitBounds(defaultBounds, { padding: [50, 50], maxZoom: 15 });
-        } else {
-          m.setView([39.1653, -86.5264], 13);
-        }
+    // +++ MAP CENTERING +++
+    if (mapVariant === 'propose') {
+      // Zoom level changed to 6 so Indiana fits perfectly in the drawer
+      m.setView([39.7684, -86.1581], 6);
+    } else if (featureGroupArray.length > 0) {
+      const group = L.featureGroup(featureGroupArray);
+      defaultBounds = group.getBounds();
+      m.fitBounds(defaultBounds, { padding: [50, 50], maxZoom: 15 });
+    } else {
+      m.setView([39.1653, -86.5264], 13);
+    }
 
-        setTimeout(() => { m.invalidateSize(); }, 100);
+    setTimeout(() => { m.invalidateSize(); }, 100);
         map = m;
 
     }, 50); // <-- The 50ms delay
