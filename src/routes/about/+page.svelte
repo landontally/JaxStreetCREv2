@@ -198,7 +198,7 @@
 						<img 
 							src={member.image} 
 							alt={member.name} 
-							class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[1200ms] ease-out" 
+							class="w-full h-full object-cover md:grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[1200ms] ease-out" 
 						/>
 					</div>
 					

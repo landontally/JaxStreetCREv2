@@ -14,6 +14,12 @@
 	let surroundingArea = $derived(property.surroundingArea || []);
 	let marqueeItems = $derived([...surroundingArea, ...surroundingArea, ...surroundingArea, ...surroundingArea]);
 
+	// Resets the map marker if the user navigates to a new property
+	$effect(() => {
+		property.title; 
+		activeLocation = null;
+	});
+
 	// --- CUSTOM REVEAL ACTION ---
 	function reveal(node: HTMLElement) {
 		node.classList.add('opacity-0', 'translate-y-16', 'transition-all', 'duration-[1200ms]', 'ease-out');
@@ -227,8 +233,7 @@
 
 							<div class="relative z-10">
 								<h3 class="text-2xl font-bold text-white mb-2 tracking-tight">Interested in this space?</h3>
-								<p class="text-zinc-400 text-sm leading-relaxed">Reach out directly to schedule a tour or request more detailed floorplans.</p>
-							</div>
+								<p class="text-zinc-400 text-sm leading-relaxed">Reach out directly to discuss leasing opportunities, rates, and to see if this space is the right fit for your business.</p>							</div>
 							
 							<div class="flex flex-col gap-4 relative z-10">
 								<a href="mailto:e@email.com" class="w-full bg-teal-600 hover:bg-teal-500 text-white text-center font-bold py-4 rounded-sm transition-colors flex items-center justify-center gap-3 uppercase tracking-widest text-xs">
@@ -386,27 +391,26 @@
 
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 					{#each data.recommendations as rec}
-						<a href="/properties/{rec.slug}" class="group flex flex-col bg-zinc-900 hover:bg-white border border-zinc-800 hover:border-transparent rounded-sm overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl" use:reveal>
+					<a href="/properties/{rec.slug}" class="group flex flex-col bg-white md:bg-zinc-900 md:hover:bg-white border border-zinc-200 md:border-zinc-800 md:hover:border-transparent rounded-sm overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl" use:reveal>
+						<div class="w-full h-48 md:h-56 relative overflow-hidden bg-zinc-950">
+							<img src={rec.image} alt={rec.title} class="absolute inset-0 w-full h-full object-cover md:grayscale md:opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
 							
-							<div class="w-full h-48 md:h-56 relative overflow-hidden bg-zinc-950">
-								<img src={rec.image} alt={rec.title} class="absolute inset-0 w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
-								
-								<div class="absolute top-4 left-4 bg-zinc-950/90 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm shadow-lg border border-white/10">
-									{rec.distance === 9999 ? 'Indiana Market' : `${rec.distance.toFixed(1)} miles away`}
-								</div>
+							<div class="absolute top-4 left-4 bg-zinc-950/90 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm shadow-lg border border-white/10">
+								{rec.distance === 9999 ? 'Indiana Market' : `${rec.distance.toFixed(1)} miles away`}
 							</div>
+						</div>
+						
+						<div class="p-6 md:p-8 flex flex-col flex-grow relative transition-colors duration-500">
+							<span class="text-teal-600 md:text-teal-500 group-hover:text-teal-600 text-[10px] font-black uppercase tracking-widest block mb-2 transition-colors duration-500">{rec.type || 'Retail'}</span>
 							
-							<div class="p-6 md:p-8 flex flex-col flex-grow relative transition-colors duration-500">
-								<span class="text-teal-500 group-hover:text-teal-600 text-[10px] font-black uppercase tracking-widest block mb-2 transition-colors duration-500">{rec.type || 'Retail'}</span>
-								
-								<h3 class="text-2xl font-bold text-white group-hover:text-zinc-950 leading-tight mb-2 transition-colors duration-500 line-clamp-2">{rec.title}</h3>
-								
-								<p class="text-zinc-400 group-hover:text-zinc-500 text-sm flex items-center gap-2 mt-auto pt-6 border-t border-zinc-800 group-hover:border-zinc-200 transition-colors duration-500">
-									<svg class="w-4 h-4 text-zinc-500 group-hover:text-teal-500 transition-colors duration-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-									<span class="truncate">{rec.location}</span>
-								</p>
-							</div>
-						</a>
+							<h3 class="text-2xl font-bold text-zinc-950 md:text-white group-hover:text-zinc-950 leading-tight mb-2 transition-colors duration-500 line-clamp-2">{rec.title}</h3>
+							
+							<p class="text-zinc-500 md:text-zinc-400 group-hover:text-zinc-500 text-sm flex items-center gap-2 mt-auto pt-6 border-t border-zinc-200 md:border-zinc-800 group-hover:border-zinc-200 transition-colors duration-500">
+								<svg class="w-4 h-4 text-teal-500 md:text-zinc-500 group-hover:text-teal-500 transition-colors duration-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+								<span class="truncate">{rec.location}</span>
+							</p>
+						</div>
+					</a>
 					{/each}
 				</div>
 			</div>
@@ -446,5 +450,9 @@
 
 	.animate-marquee-fast {
 		animation: marquee-fast 22s linear infinite;
+	}
+
+	.animate-marquee-fast:hover {
+		animation-play-state: paused;
 	}
 </style>
