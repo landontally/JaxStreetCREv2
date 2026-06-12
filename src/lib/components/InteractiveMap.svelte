@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import 'leaflet/dist/leaflet.css';
-  // Import the base clustering CSS
   import 'leaflet.markercluster/dist/MarkerCluster.css';
 
-  let { propertyCoords, surroundingArea = [], directoryProperties = [], properties = [], activeLocation, propertyTitle } = $props();
+  // ADD mapVariant to your destructured props with a default value
+  let { propertyCoords, surroundingArea = [], directoryProperties = [], properties = [], activeLocation, propertyTitle, mapVariant = 'default' } = $props();
 
   let mapElement: HTMLElement;
   let map = $state<any>(null);
@@ -30,6 +30,31 @@
         subdomains: 'abcd',
         maxZoom: 20
       }).addTo(m);
+
+// +++ NEW: ADD INDIANA OUTLINE +++
+        if (mapVariant === 'propose') {
+          // Fetch all US states from a highly reliable public API
+          fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+            .then(res => res.json())
+            .then(data => {
+              // Filter the data to only include Indiana
+              const indianaGeoJSON = {
+                type: 'FeatureCollection',
+                features: data.features.filter((f: any) => f.properties.name === 'Indiana')
+              };
+
+              L.geoJSON(indianaGeoJSON, {
+                style: {
+                  color: '#09090b', // matches your zinc-950
+                  weight: 3,        // bold outline
+                  fillColor: '#14b8a6', // matches your teal-500
+                  fillOpacity: 0.05
+                },
+                interactive: false // ensures the outline doesn't block clicks on your pins
+              }).addTo(m);
+            })
+            .catch(err => console.error("Could not load Indiana boundary", err));
+        }
 
     const customPopupOptions = { className: 'jax-popup', closeButton: false };
 
@@ -68,25 +93,31 @@
 
     let dirProps = directoryProperties.length > 0 ? directoryProperties : properties;
 
-    // --- DIRECTORY MODE ---
-    if (dirProps.length > 0) {
-      dirProps.forEach((prop: any) => {
-        if (prop.coordinates?.lat && prop.coordinates?.lng) {
-          const marker = L.marker([prop.coordinates.lat, prop.coordinates.lng], { icon: mainIcon })
-            .bindPopup(`
-              <div class="text-center flex flex-col gap-1">
-                <span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest">${prop.status || 'Property'}</span>
-                <span class="text-sm font-bold text-zinc-950 leading-tight">${prop.title}</span>
-              </div>
-            `, customPopupOptions);
-          
-          markers[prop.slug] = marker;
-          // Add to cluster instead of the map
-          clusterGroup.addLayer(marker); 
-          featureGroupArray.push(marker);
-        }
-      });
-    } 
+        // --- DIRECTORY MODE ---
+        if (dirProps.length > 0) {
+          dirProps.forEach((prop: any) => {
+            if (prop.coordinates?.lat && prop.coordinates?.lng) {
+              
+              // +++ NEW: CONDITIONAL LINK FOR PROPOSE DRAWER +++
+              let linkHtml = (mapVariant === 'propose' && prop.slug)
+                ? `<a href="/properties/${prop.slug}" class="mt-2 pt-2 border-t border-zinc-100 text-xs font-bold text-teal-600 hover:text-teal-700 block">View Property Details &rarr;</a>`
+                : '';
+
+              const marker = L.marker([prop.coordinates.lat, prop.coordinates.lng], { icon: mainIcon })
+                .bindPopup(`
+                  <div class="text-center flex flex-col gap-1">
+                    <span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest">${prop.status || 'Property'}</span>
+                    <span class="text-sm font-bold text-zinc-950 leading-tight">${prop.title}</span>
+                    ${linkHtml}
+                  </div>
+                `, customPopupOptions);
+              
+              markers[prop.slug] = marker;
+              clusterGroup.addLayer(marker); 
+              featureGroupArray.push(marker);
+            }
+          });
+        } 
     // --- SINGLE PROPERTY MODE ---
     else {
       if (propertyCoords?.lat && propertyCoords?.lng) {
@@ -109,19 +140,23 @@
     }
 
     // Add the fully loaded cluster group to the map!
-    m.addLayer(clusterGroup);
-    markerClusterGroup = clusterGroup;
+        m.addLayer(clusterGroup);
+        markerClusterGroup = clusterGroup;
 
-    if (featureGroupArray.length > 0) {
-      const group = L.featureGroup(featureGroupArray);
-      defaultBounds = group.getBounds();
-      m.fitBounds(defaultBounds, { padding: [50, 50], maxZoom: 15 });
-    } else {
-      m.setView([39.1653, -86.5264], 13);
-    }
+        // +++ NEW: CONDITIONAL MAP CENTERING +++
+        if (mapVariant === 'propose') {
+          // Center directly on Indiana and zoom out
+          m.setView([39.7684, -86.1581], 7);
+        } else if (featureGroupArray.length > 0) {
+          const group = L.featureGroup(featureGroupArray);
+          defaultBounds = group.getBounds();
+          m.fitBounds(defaultBounds, { padding: [50, 50], maxZoom: 15 });
+        } else {
+          m.setView([39.1653, -86.5264], 13);
+        }
 
-    setTimeout(() => { m.invalidateSize(); }, 100);
-      map = m;
+        setTimeout(() => { m.invalidateSize(); }, 100);
+        map = m;
 
     }, 50); // <-- The 50ms delay
 

@@ -212,7 +212,10 @@
     <div class="flex flex-col gap-3 mt-2 pb-8 flex-grow">
         <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">Our Indiana Footprint</h3>
         <div class="w-full min-h-[300px] flex-grow bg-zinc-100 rounded-sm border border-zinc-200 overflow-hidden relative z-0 shadow-inner">
-            <InteractiveMap properties={$page.data.allProperties || []} />
+            <InteractiveMap 
+              properties={$page.data.allProperties || []} 
+              mapVariant="propose" 
+            />
         </div>
         <p class="text-[10px] text-zinc-400 font-medium mt-1 text-center uppercase tracking-widest">
             Serving the greater Indiana markets
