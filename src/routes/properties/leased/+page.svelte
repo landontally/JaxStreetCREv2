@@ -79,8 +79,8 @@
 </script>
 
 <svelte:head>
-	<title>Leased Properties | Jax Street CRE</title>
-	<meta name="description" content="View our portfolio of successfully leased retail and light industrial properties across Indiana." />
+	<title>Available Properties | Bloomington & Central IN Commercial Real Estate | Jax Street CRE</title>
+	<meta name="description" content="View our portfolio of successfully leased retail and light industrial properties across central Indiana." />
 </svelte:head>
 
 <div class="bg-white min-h-screen text-zinc-950 flex flex-col overflow-hidden relative">
@@ -148,7 +148,7 @@
                                 <span class="text-teal-600 text-[9px] font-black uppercase tracking-widest block mb-1">
                                     {property.type || 'Retail'}
                                 </span>
-                                <a href="/properties/{property.slug}" class="block group/title cursor-pointer">
+                                <a href="/properties/{property.slug}" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 block group/title cursor-pointer">
                                     <h3 class="text-lg font-bold text-zinc-950 leading-tight mb-2 line-clamp-2">
                                         {property.title}
                                     </h3>
@@ -165,14 +165,14 @@
                                         activeLocation = property;
                                         if (window.innerWidth < 1024) isMobileMapOpen = true;
                                     }}
-                                    class="text-[10px] font-bold uppercase text-zinc-500 hover:text-teal-600 transition-colors tracking-widest"
+                                    class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500text-[10px] font-bold uppercase text-zinc-500 hover:text-teal-600 transition-colors tracking-widest"
                                 >
                                     Focus Map
                                 </button>
                                 
                                 <a 
                                     href="/properties/{property.slug}"
-                                    class="text-[10px] font-bold uppercase text-zinc-500 hover:text-zinc-950 transition-colors flex items-center gap-1 tracking-widest ml-auto"
+                                    class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 text-[10px] font-bold uppercase text-zinc-500 hover:text-zinc-950 transition-colors flex items-center gap-1 tracking-widest ml-auto"
                                 >
                                     Full Details
                                     <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -203,7 +203,7 @@
     </div>
 
     <button 
-        class="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-950 text-white border border-zinc-700 font-bold uppercase tracking-widest text-[10px] px-8 py-4 rounded-full shadow-2xl z-40 flex items-center gap-2 hover:bg-zinc-800 transition-colors"
+        class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-950 text-white border border-zinc-700 font-bold uppercase tracking-widest text-[10px] px-8 py-4 rounded-full shadow-2xl z-40 flex items-center gap-2 hover:bg-zinc-800 transition-colors"
         onclick={() => isMobileMapOpen = true}
     >
         <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
@@ -219,7 +219,7 @@
                 <span class="text-white font-bold uppercase tracking-widest text-xs">Property Map</span>
                 <button 
                     onclick={() => { isMobileMapOpen = false; activeLocation = null; }}
-                    class="text-zinc-400 hover:text-white p-2 transition-colors"
+                    class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 text-zinc-400 hover:text-white p-2 transition-colors"
                     aria-label="Close map"
                 >
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>

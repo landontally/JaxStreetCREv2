@@ -199,7 +199,7 @@
 							<h3 class="text-2xl font-bold mb-2">Property Brochure</h3>
 							<p class="text-zinc-400">Download the full PDF prospectus for more information.</p>
 						</div>
-						<a href={property.brochureUrl} target="_blank" aria-label="Download brochure PDF (opens in a new tab)" class="relative z-10 shrink-0 bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 px-8 rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest text-xs">
+						<a href={property.brochureUrl} target="_blank" aria-label="Download brochure PDF (opens in a new tab)" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 relative z-10 shrink-0 bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 px-8 rounded-sm transition-colors flex items-center gap-3 uppercase tracking-widest text-xs">
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
 							Download PDF
 						</a>
@@ -213,7 +213,7 @@
 							{#each property.gallery as img}
 								<button 
 									onclick={() => selectedImage = img} 
-									class="w-full aspect-[4/3] overflow-hidden rounded-sm bg-zinc-200 cursor-zoom-in group relative shadow-md"
+									class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 w-full aspect-[4/3] overflow-hidden rounded-sm bg-zinc-200 cursor-zoom-in group relative shadow-md"
 									aria-label="Enlarge image"
 								>
 									<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors z-10"></div>
@@ -236,11 +236,11 @@
 								<p class="text-zinc-400 text-sm leading-relaxed">Reach out directly to discuss leasing opportunities, rates, and to see if this space is the right fit for your business.</p>							</div>
 							
 							<div class="flex flex-col gap-4 relative z-10">
-								<a href="mailto:e@email.com" class="w-full bg-teal-600 hover:bg-teal-500 text-white text-center font-bold py-4 rounded-sm transition-colors flex items-center justify-center gap-3 uppercase tracking-widest text-xs">
+								<a href="mailto:e@email.com" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 w-full bg-teal-600 hover:bg-teal-500 text-white text-center font-bold py-4 rounded-sm transition-colors flex items-center justify-center gap-3 uppercase tracking-widest text-xs">
 									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
 									Email Eric
 								</a>
-								<a href="tel:5551234567" class="w-full text-center border border-white/20 hover:border-white hover:bg-white hover:text-zinc-950 text-white font-bold py-4 rounded-sm transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-xs">
+								<a href="tel:5551234567" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 w-full text-center border border-white/20 hover:border-white hover:bg-white hover:text-zinc-950 text-white font-bold py-4 rounded-sm transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-xs">
 									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
 									Call Eric
 								</a>
@@ -319,7 +319,7 @@
 					<p class="text-zinc-600 font-medium">Explore the local market and click a business to see its location.</p>
 				</div>
 				{#if activeLocation}
-					<button onclick={() => activeLocation = null} class="text-[10px] font-bold text-teal-600 hover:text-teal-700 uppercase tracking-widest flex items-center gap-1 transition-colors shrink-0">
+					<button onclick={() => activeLocation = null} class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 text-[10px] font-bold text-teal-600 hover:text-teal-700 uppercase tracking-widest flex items-center gap-1 transition-colors shrink-0">
 						<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
 						Reset Map
 					</button>
@@ -341,7 +341,7 @@
 							{#each marqueeItems as business}
 								<button 
 									onclick={() => activeLocation = business}
-									class="flex items-center gap-3 mx-8 text-sm md:text-base font-bold text-zinc-400 hover:text-teal-600 transition-colors uppercase tracking-widest cursor-pointer whitespace-nowrap"
+									class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 flex items-center gap-3 mx-8 text-sm md:text-base font-bold text-zinc-400 hover:text-teal-600 transition-colors uppercase tracking-widest cursor-pointer whitespace-nowrap"
 								>
 									{business.name}
 								</button>
@@ -383,7 +383,7 @@
 						</h2>
 						<p class="text-zinc-400 font-medium text-lg">Explore similar properties in the market.</p>
 					</div>
-					<a href={(property.status || '').toLowerCase().includes('leased') ? '/properties/leased' : '/properties/available'} class="group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-white hover:text-teal-400 transition-colors bg-white/5 hover:bg-white/10 px-6 py-4 rounded-sm border border-white/10">
+					<a href={(property.status || '').toLowerCase().includes('leased') ? '/properties/leased' : '/properties/available'} class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 group flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-white hover:text-teal-400 transition-colors bg-white/5 hover:bg-white/10 px-6 py-4 rounded-sm border border-white/10">
 						View All {(property.status || '').toLowerCase().includes('leased') ? 'Leased' : 'Available'} 
 						<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
 					</a>
@@ -391,7 +391,7 @@
 
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 					{#each data.recommendations as rec}
-					<a href="/properties/{rec.slug}" class="group flex flex-col bg-white md:bg-zinc-900 md:hover:bg-white border border-zinc-200 md:border-zinc-800 md:hover:border-transparent rounded-sm overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl" use:reveal>
+					<a href="/properties/{rec.slug}" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 group flex flex-col bg-white md:bg-zinc-900 md:hover:bg-white border border-zinc-200 md:border-zinc-800 md:hover:border-transparent rounded-sm overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg hover:shadow-2xl" use:reveal>
 						<div class="w-full h-48 md:h-56 relative overflow-hidden bg-zinc-950">
 							<img src={rec.image} alt={rec.title} class="absolute inset-0 w-full h-full object-cover md:grayscale md:opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
 							
@@ -425,7 +425,7 @@
 		onclick={() => selectedImage = null}
 	>
 		<button 
-			class="absolute top-6 right-6 text-zinc-400 hover:text-white transition-colors bg-black/50 p-3 rounded-full"
+			class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 absolute top-6 right-6 text-zinc-400 hover:text-white transition-colors bg-black/50 p-3 rounded-full"
 			onclick={() => selectedImage = null}
 			aria-label="Close image"
 		>

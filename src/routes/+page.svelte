@@ -9,15 +9,15 @@
 	// --- Add these variables inside your <script> tag ---
 	let scrollY = $state(0);
 	let innerHeight = $state(0);
-// --- SCATTER TO GRID ANIMATION MATH (SNAPPY VERSION) ---
+	// --- SCATTER TO GRID ANIMATION MATH (SNAPPY VERSION) ---
 	let aboutSection = $state<HTMLElement>();
 
 	let aboutProgress = $derived.by(() => {
 		if (!aboutSection || !innerHeight) return 0;
 		const start = aboutSection.offsetTop; 
         
-		// REDUCED: Now only takes ~1 screen height to complete the entire animation
-		const distance = innerHeight * 1.2; 
+		// ULTRA-COMPRESSED: The animation now finishes in 60% of one screen height
+		const distance = innerHeight * 0.6; 
 		
 		if (scrollY < start) return 0;
 		if (scrollY > start + distance) return 1;
@@ -126,10 +126,10 @@
 
 <svelte:head>
 	<title>Jax Street CRE | Indiana Commercial Real Estate</title>
-	<meta name="description" content="Jax Street CRE is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
+	<meta name="description" content="Jax Street CRE is an owner-operated commercial real estate firm in central Indiana, specializing in high-demand retail and light industrial properties." />
 
-	<meta property="og:title" content="Jax Street CRE | Indiana Commercial Real Estate" />
-	<meta property="og:description" content="Jax Street CRE is an owner-operated commercial real estate firm in Indiana, specializing in high-demand retail and light industrial properties." />
+	<meta property="og:title" content="Jax Street CRE | Bloomington & Central IN Commercial Real Estate" />
+	<meta property="og:description" content="Jax Street CRE is an owner-operated commercial real estate firm in central Indiana, specializing in high-demand retail and light industrial properties." />
 	<meta property="og:type" content="website" />
 	
 	{#if heroImages && heroImages.length > 0}
@@ -140,6 +140,7 @@
 </svelte:head>
 
 <div class="bg-zinc-950 min-h-screen text-white selection:bg-teal-500 overflow-x-clip">
+	<h1 class="sr-only">Jax Street CRE: Premium Commercial Real Estate in Bloomington and Central Indiana</h1>
 	
 	<section class="relative h-screen flex flex-col justify-center px-6 md:px-12 z-10 overflow-hidden bg-zinc-950">
 		
@@ -189,11 +190,11 @@
 			</p>
 			
 			<div use:reveal class="flex flex-col sm:flex-row gap-6">
-				<a href="/properties/available" class="group relative bg-teal-600 hover:bg-teal-500 text-white font-bold uppercase tracking-widest text-xs py-5 px-10 rounded-sm transition-all duration-300 shadow-xl hover:shadow-teal-500/20 overflow-hidden">
+				<a href="/properties/available" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 group relative bg-teal-600 hover:bg-teal-500 text-white font-bold uppercase tracking-widest text-xs py-5 px-10 rounded-sm transition-all duration-300 shadow-xl hover:shadow-teal-500/20 overflow-hidden">
 					<span class="relative z-10">View Properties</span>
 					<div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
 				</a>
-				<a href="/about" class="bg-transparent border border-zinc-700 hover:border-zinc-300 hover:bg-zinc-800 text-white font-bold uppercase tracking-widest text-xs py-5 px-10 rounded-sm transition-all duration-300 text-center">
+				<a href="/about" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 bg-transparent border border-zinc-700 hover:border-zinc-300 hover:bg-zinc-800 text-white font-bold uppercase tracking-widest text-xs py-5 px-10 rounded-sm transition-all duration-300 text-center">
 					Our Story
 				</a>
 			</div>
@@ -286,7 +287,7 @@
 										{/if}
 									</div>
 									
-									<a href="/properties/{property.slug}" onclick={(e) => { if(isDragging) e.preventDefault(); e.stopPropagation(); }} class="shrink-0 flex justify-center items-center gap-4 group/btn bg-white/10 hover:bg-white border border-white/20 hover:border-white backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-sm transition-all duration-300 cursor-pointer mt-2 md:mt-0">
+									<a href="/properties/{property.slug}" onclick={(e) => { if(isDragging) e.preventDefault(); e.stopPropagation(); }} class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 shrink-0 flex justify-center items-center gap-4 group/btn bg-white/10 hover:bg-white border border-white/20 hover:border-white backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-sm transition-all duration-300 cursor-pointer mt-2 md:mt-0">
 										<span class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white group-hover/btn:text-zinc-950 transition-colors">View Listing</span>
 										<div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-teal-500 text-white flex items-center justify-center group-hover/btn:bg-zinc-950 transition-colors">
 											<svg class="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
@@ -302,7 +303,7 @@
 					{#each properties as _, i}
 						<button 
 							onclick={() => currentIndex = i}
-							class="h-1.5 rounded-full transition-all duration-500 shadow-md {i === currentIndex ? 'bg-teal-500 w-8' : 'bg-zinc-400 w-2 hover:bg-zinc-200'}"
+							class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 h-1.5 rounded-full transition-all duration-500 shadow-md {i === currentIndex ? 'bg-teal-500 w-8' : 'bg-zinc-400 w-2 hover:bg-zinc-200' }"
 							aria-label="Go to slide {i + 1}"
 						></button>
 					{/each}
@@ -314,7 +315,7 @@
 	</section>
 
 <!-- SCATTER TO GRID SECTION (LIGHT THEME) -->
-<section bind:this={aboutSection} class="relative bg-white" style="height: 240vh;">
+<section bind:this={aboutSection} class="relative bg-white" style="height: 170vh;">
     <div class="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-white border-t border-b border-zinc-200">
 
         <!-- INITIAL TEXT -->
@@ -358,7 +359,7 @@
                 and treat our tenants <span class="text-teal-600 italic font-light">like family.</span>
             </h3>
             
-            <a href="/about" class="bg-teal-600 hover:bg-teal-700 text-white font-bold uppercase tracking-widest text-xs px-10 py-5 rounded-sm transition-all shadow-xl hover:shadow-teal-600/20 group flex items-center gap-3">
+            <a href="/about" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 bg-teal-600 hover:bg-teal-700 text-white font-bold uppercase tracking-widest text-xs px-10 py-5 rounded-sm transition-all shadow-xl hover:shadow-teal-600/20 group flex items-center gap-3">
                 Discover Our Story
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
