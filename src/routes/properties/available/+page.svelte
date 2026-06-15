@@ -6,13 +6,12 @@
     let properties = data.properties;
 
     let activeLocation = $state(null);
+    let hoveredLocation = $state(null); // Added hover state
     let isMobileMapOpen = $state(false);
 
-    // --- SORT & FILTER STATE ---
     let sortBy = $state('addressAsc'); 
     let filterCity = $state('All');
 
-    // --- NEW: SVELTEKIT SNAPSHOT FOR SCROLL MEMORY ---
     let listContainer = $state<HTMLElement>();
 
     export const snapshot = {
@@ -26,28 +25,23 @@
         restore: (state) => {
             filterCity = state.savedCity;
             sortBy = state.savedSort;
-            // Wait a tiny fraction of a second for the list to render, then scroll to the exact spot!
             setTimeout(() => {
                 if (listContainer) listContainer.scrollTop = state.scrollY;
             }, 10);
         }
     };
 
-    // Automatically generate a unique list of cities based on your properties array
     let availableCities = $derived(
         ['All', ...new Set(properties.map((p: any) => p.location.split(',')[0].trim()))].sort()
     );
 
-    // This dynamically rebuilds the list instantly whenever a dropdown changes
     let displayProperties = $derived.by(() => {
         let result = [...properties];
 
-        // 1. Apply City Filter
         if (filterCity !== 'All') {
             result = result.filter(p => p.location.split(',')[0].trim() === filterCity);
         }
 
-        // 2. Apply Sorting
         result.sort((a, b) => {
             if (sortBy === 'newest') {
                 return new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime();
@@ -56,14 +50,11 @@
                 return new Date(a._createdAt).getTime() - new Date(b._createdAt).getTime();
             }
             if (sortBy === 'addressAsc' || sortBy === 'addressDesc') {
-                // ParseInt automatically grabs the leading numbers from "116 S. Franklin Road"
                 const numA = parseInt(a.title) || 0; 
                 const numB = parseInt(b.title) || 0;
-                
                 if (numA !== numB) {
                     return sortBy === 'addressAsc' ? numA - numB : numB - numA;
                 }
-                // If the street numbers match, sort alphabetically by the rest of the address
                 return sortBy === 'addressAsc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
             }
             return 0;
@@ -131,12 +122,16 @@
         <div bind:this={listContainer} class="w-full lg:w-[450px] xl:w-[500px] h-full overflow-y-auto bg-white p-4 md:p-6 flex flex-col gap-4 custom-scrollbar shrink-0 relative z-10">            
             {#if displayProperties.length > 0}
                 {#each displayProperties as property}
-                    <div class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg">
-                        
+                    <div 
+                        class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg"
+                        onmouseenter={() => hoveredLocation = property}
+                        onmouseleave={() => hoveredLocation = null}
+                    >
                         <div class="w-2/5 md:w-1/3 min-h-[160px] h-full relative overflow-hidden bg-zinc-100 shrink-0">
                             <img 
                                 src={property.image} 
                                 alt={property.title}
+                                loading="lazy"
                                 class="absolute inset-0 w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                             />
                         </div>
@@ -192,7 +187,8 @@
             {#key filterCity}
             <InteractiveMap 
                 properties={displayProperties} 
-                activeLocation={activeLocation} 
+                activeLocation={activeLocation}
+                hoveredLocation={hoveredLocation}
             />
             {/key}
         </div>
@@ -225,7 +221,11 @@
             
             <div class="flex-grow relative z-0">
                 {#key filterCity}
-                <InteractiveMap properties={displayProperties} activeLocation={activeLocation} />
+                <InteractiveMap 
+                    properties={displayProperties} 
+                    activeLocation={activeLocation}
+                    hoveredLocation={hoveredLocation}
+                />
                 {/key}
             </div>
         </div>
@@ -234,18 +234,17 @@
 </div>
 
 <style>
-	/* Sleek, light-mode scrollbar for the property list */
 	.custom-scrollbar::-webkit-scrollbar {
 		width: 6px;
 	}
 	.custom-scrollbar::-webkit-scrollbar-track {
-		background: #fafafa; /* zinc-50 */
+		background: #fafafa;
 	}
 	.custom-scrollbar::-webkit-scrollbar-thumb {
-		background: #d4d4d8; /* zinc-300 */
+		background: #d4d4d8;
 		border-radius: 4px;
 	}
 	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-		background: #14b8a6; /* teal-500 */
+		background: #14b8a6;
 	}
 </style>

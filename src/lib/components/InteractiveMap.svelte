@@ -4,8 +4,7 @@
   import 'leaflet.markercluster/dist/MarkerCluster.css';
 
   // ADD mapVariant to your destructured props with a default value
-  let { propertyCoords, surroundingArea = [], directoryProperties = [], properties = [], activeLocation, propertyTitle, mapVariant = 'default' } = $props();
-
+  let { propertyCoords, surroundingArea = [], directoryProperties = [], properties = [], activeLocation, hoveredLocation = null, propertyTitle, mapVariant = 'default' } = $props();
   let mapElement: HTMLElement;
   let map = $state<any>(null);
   let markers = $state<any>({});
@@ -60,8 +59,14 @@
 
     const mainIcon = L.divIcon({
       className: 'bg-transparent',
-      html: `<div class="w-6 h-6 bg-teal-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center animate-bounce"><div class="w-1.5 h-1.5 bg-white rounded-full"></div></div>`,
-      iconSize: [24, 24], iconAnchor: [12, 12]
+      html: `
+        <div class="animate-bounce drop-shadow-xl">
+          <div class="marker-dot w-6 h-6 bg-teal-500 rounded-full border-4 border-white flex items-center justify-center transition-all duration-300 origin-bottom">
+            <div class="w-1.5 h-1.5 bg-white rounded-full transition-all duration-300"></div>
+          </div>
+        </div>`,
+      iconSize: [24, 24], 
+      iconAnchor: [12, 24] 
     });
 
     const smallIcon = L.divIcon({
@@ -211,6 +216,41 @@
                   markers['main'].openPopup();
                });
              });
+          }
+        }
+      }
+    }
+  });
+
+// --- CROSS-HOVER ANIMATION ---
+  $effect(() => {
+    if (!map || !markers) return;
+
+    // 1. Reset all markers to their default state
+    Object.values(markers).forEach((m: any) => {
+      const el = m.getElement();
+      if (el) {
+        const dot = el.querySelector('.marker-dot');
+        if (dot) {
+          dot.classList.remove('scale-[1.6]', 'bg-teal-400');
+          dot.classList.add('bg-teal-500');
+          m.setZIndexOffset(0);
+        }
+      }
+    });
+
+    // 2. Enlarge and highlight the hovered marker
+    if (hoveredLocation) {
+      const identifier = hoveredLocation.slug || hoveredLocation.name;
+      const targetMarker = markers[identifier];
+      if (targetMarker) {
+        const el = targetMarker.getElement();
+        if (el) {
+          const dot = el.querySelector('.marker-dot');
+          if (dot) {
+            dot.classList.remove('bg-teal-500');
+            dot.classList.add('scale-[1.6]', 'bg-teal-400');
+            targetMarker.setZIndexOffset(1000); // Bring it to the front
           }
         }
       }

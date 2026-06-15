@@ -262,7 +262,7 @@
 							<div class="h-1 w-8 bg-teal-500"></div>
 							<h3 class="text-3xl font-bold text-zinc-950 tracking-tight">Market Demographics</h3>
 						</div>
-						<p class="text-zinc-500 font-medium">Key insights and traffic data for the surrounding area.</p>
+						<p class="text-zinc-600 font-medium">Key insights and traffic data for the surrounding area.</p>
 					</div>
 				</div>
 
@@ -292,15 +292,15 @@
 							<div class="grid grid-cols-3 gap-4 relative z-10 mt-2">
 								<div class="flex flex-col items-center md:items-start group/stat">
 									<span class="text-2xl lg:text-4xl font-bold text-white mb-2 tracking-tighter group-hover/stat:-translate-y-1 transition-transform" use:countUp>{property.demographics.totalPopulation || '-'}</span>
-									<span class="text-zinc-500 text-[9px] font-bold uppercase tracking-widest">Population</span>
+									<span class="text-zinc-600 text-[9px] font-bold uppercase tracking-widest">Population</span>
 								</div>
 								<div class="flex flex-col items-center md:items-start md:border-l md:border-white/10 md:pl-8 group/stat">
 									<span class="text-2xl lg:text-4xl font-bold text-white mb-2 tracking-tighter group-hover/stat:-translate-y-1 transition-transform" use:countUp>{property.demographics.totalHouseholds || '-'}</span>
-									<span class="text-zinc-500 text-[9px] font-bold uppercase tracking-widest">Households</span>
+									<span class="text-zinc-600 text-[9px] font-bold uppercase tracking-widest">Households</span>
 								</div>
 								<div class="flex flex-col items-center md:items-start md:border-l md:border-white/10 md:pl-8 group/stat">
 									<span class="text-2xl lg:text-4xl font-bold text-white mb-2 tracking-tighter group-hover/stat:-translate-y-1 transition-transform" use:countUp>{property.demographics.medianAge || '-'}</span>
-									<span class="text-zinc-500 text-[9px] font-bold uppercase tracking-widest">Median Age</span>
+									<span class="text-zinc-600 text-[9px] font-bold uppercase tracking-widest">Median Age</span>
 								</div>
 							</div>
 						</div>
@@ -316,7 +316,7 @@
 			<div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-12" use:reveal>
 				<div>
 					<h3 class="text-3xl font-bold text-zinc-950 tracking-tight mb-2">Property Map</h3>
-					<p class="text-zinc-500 font-medium">Explore the local market and click a business to see its location.</p>
+					<p class="text-zinc-600 font-medium">Explore the local market and click a business to see its location.</p>
 				</div>
 				{#if activeLocation}
 					<button onclick={() => activeLocation = null} class="text-[10px] font-bold text-teal-600 hover:text-teal-700 uppercase tracking-widest flex items-center gap-1 transition-colors shrink-0">
@@ -405,8 +405,8 @@
 							
 							<h3 class="text-2xl font-bold text-zinc-950 md:text-white group-hover:text-zinc-950 leading-tight mb-2 transition-colors duration-500 line-clamp-2">{rec.title}</h3>
 							
-							<p class="text-zinc-500 md:text-zinc-400 group-hover:text-zinc-500 text-sm flex items-center gap-2 mt-auto pt-6 border-t border-zinc-200 md:border-zinc-800 group-hover:border-zinc-200 transition-colors duration-500">
-								<svg class="w-4 h-4 text-teal-500 md:text-zinc-500 group-hover:text-teal-500 transition-colors duration-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+							<p class="text-zinc-600 md:text-zinc-400 group-hover:text-zinc-600 text-sm flex items-center gap-2 mt-auto pt-6 border-t border-zinc-200 md:border-zinc-800 group-hover:border-zinc-200 transition-colors duration-500">
+								<svg class="w-4 h-4 text-teal-500 md:text-zinc-600 group-hover:text-teal-500 transition-colors duration-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
 								<span class="truncate">{rec.location}</span>
 							</p>
 						</div>

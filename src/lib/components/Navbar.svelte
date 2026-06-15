@@ -112,7 +112,7 @@
 
         <div class="flex-grow overflow-y-auto custom-scrollbar flex flex-col gap-4 pr-2">
             {#if searchQuery.trim() !== '' && searchResults.length === 0}
-                <p class="text-zinc-500 font-medium text-lg mt-8">No properties found matching "{searchQuery}"</p>
+                <p class="text-zinc-600 font-medium text-lg mt-8">No properties found matching "{searchQuery}"</p>
             {/if}
 
             {#each searchResults as result}
@@ -210,7 +210,7 @@
       </div>
 
     <div class="flex flex-col gap-3 mt-2 pb-8 flex-grow">
-        <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">Our Indiana Footprint</h3>
+        <h3 class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest pl-1">Our Indiana Footprint</h3>
         <div class="w-full min-h-[300px] flex-grow bg-zinc-100 rounded-sm border border-zinc-200 overflow-hidden relative z-0 shadow-inner">
             <InteractiveMap 
               properties={$page.data.allProperties || []} 

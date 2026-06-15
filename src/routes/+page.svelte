@@ -6,6 +6,37 @@
 	let properties = data?.properties || [];
 	let heroImages = data?.heroImages || [];
 
+	// --- Add these variables inside your <script> tag ---
+	let scrollY = $state(0);
+	let innerHeight = $state(0);
+// --- SCATTER TO GRID ANIMATION MATH (SNAPPY VERSION) ---
+	let aboutSection = $state<HTMLElement>();
+
+	let aboutProgress = $derived.by(() => {
+		if (!aboutSection || !innerHeight) return 0;
+		const start = aboutSection.offsetTop; 
+        
+		// REDUCED: Now only takes ~1 screen height to complete the entire animation
+		const distance = innerHeight * 1.2; 
+		
+		if (scrollY < start) return 0;
+		if (scrollY > start + distance) return 1;
+		return (scrollY - start) / distance;
+	});
+
+	// Phase 1 (0.0 to 0.3): Initial text gets out of the way faster
+	let textFadeProgress = $derived(Math.min(aboutProgress / 0.3, 1));
+	
+	// Phase 2 (0.1 to 0.7): The Raw linear progress of the snap
+	let rawSnap = $derived(Math.max(0, Math.min((aboutProgress - 0.1) / 0.6, 1))); 
+	
+	// THE FRAMER SECRET: "Ease-Out Cubic" Math
+	// This makes the cards fly in super fast, then gently magnetic-snap into place.
+	let snapProgress = $derived(1 - Math.pow(1 - rawSnap, 3)); 
+	
+	// Phase 3 (0.5 to 1.0): New text reveals slightly earlier
+	let revealProgress = $derived(Math.max(0, Math.min((aboutProgress - 0.5) / 0.5, 1)));
+
 	// --- MOUSE TRACKING FOR GRID ---
 	let mouseX = $state(0);
 	let mouseY = $state(0);
@@ -91,7 +122,7 @@
 	}
 </script>
 
-<svelte:window onmousemove={handleMouseMove} />
+<svelte:window onmousemove={handleMouseMove} bind:scrollY bind:innerHeight />
 
 <svelte:head>
 	<title>Jax Street CRE | Indiana Commercial Real Estate</title>
@@ -108,7 +139,7 @@
 	{/if}
 </svelte:head>
 
-<div class="bg-zinc-950 min-h-screen text-white selection:bg-teal-500 overflow-hidden">
+<div class="bg-zinc-950 min-h-screen text-white selection:bg-teal-500 overflow-x-clip">
 	
 	<section class="relative h-screen flex flex-col justify-center px-6 md:px-12 z-10 overflow-hidden bg-zinc-950">
 		
@@ -150,7 +181,7 @@
 			<h1 class="text-4xl md:text-6xl lg:text-[7rem] font-bold tracking-tighter leading-[0.9] uppercase mb-8">
 				<span use:reveal class="block text-white">Structure.</span>
 				<span use:reveal class="block text-zinc-300">Vision.</span>
-				<span use:reveal class="block text-zinc-500">Execution.</span>
+				<span use:reveal class="block text-zinc-600">Execution.</span>
 			</h1>
 			
 			<p use:reveal class="text-lg md:text-xl text-zinc-400 max-w-2xl mb-12 leading-relaxed font-light">
@@ -169,7 +200,7 @@
 		</div>
 
 		<div use:reveal class="absolute bottom-12 right-6 md:right-12 flex flex-col items-center gap-4 z-20">
-			<span class="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-500 rotate-180" style="writing-mode: vertical-rl;">Scroll</span>
+			<span class="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-600 rotate-180" style="writing-mode: vertical-rl;">Scroll</span>
 			<div class="w-px h-16 bg-gradient-to-b from-zinc-500 to-transparent"></div>
 		</div>
 	</section>
@@ -278,53 +309,63 @@
 				</div>
 			</div>
 		{:else}
-			<div class="text-center py-32 text-zinc-500">Building Our Portfolio...</div>
+			<div class="text-center py-32 text-zinc-600">Building Our Portfolio...</div>
 		{/if}
 	</section>
 
-	<section class="py-32 md:py-48 px-6 border-t border-zinc-200 bg-white relative z-20 flex items-center justify-center min-h-[80vh] overflow-hidden">
-		
-		<div use:reveal class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center opacity-[0.35]">
-			<svg class="w-full h-full min-w-[1200px] max-w-none" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-				
-				<rect x="100" y="100" width="1000" height="600" stroke="#e4e4e7" stroke-width="1.5" class="path-draw path-delay-1" />
-				<rect x="150" y="150" width="900" height="500" stroke="#14b8a6" stroke-width="2" stroke-dasharray="10 10" class="path-draw path-delay-2" />
-				
-				<line x1="100" y1="100" x2="1100" y2="700" stroke="#e4e4e7" stroke-width="1.5" class="path-draw path-delay-3" />
-				<line x1="1100" y1="100" x2="100" y2="700" stroke="#e4e4e7" stroke-width="1.5" class="path-draw path-delay-4" />
-				
-				<circle cx="600" cy="400" r="250" stroke="#e4e4e7" stroke-width="1.5" class="path-draw path-delay-5" />
-				<circle cx="600" cy="400" r="150" stroke="#14b8a6" stroke-width="1.5" class="path-draw path-delay-6" />
-				
-				<line x1="600" y1="0" x2="600" y2="800" stroke="#e4e4e7" stroke-width="1.5" stroke-dasharray="4 8" class="path-draw path-delay-5" />
-				<line x1="0" y1="400" x2="1200" y2="400" stroke="#e4e4e7" stroke-width="1.5" stroke-dasharray="4 8" class="path-draw path-delay-5" />
-			</svg>
-		</div>
+<!-- SCATTER TO GRID SECTION (LIGHT THEME) -->
+<section bind:this={aboutSection} class="relative bg-white" style="height: 240vh;">
+    <div class="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-white border-t border-b border-zinc-200">
 
-		<div class="max-w-4xl mx-auto text-center flex flex-col items-center relative z-10">
-			
-			<div use:reveal class="flex items-center gap-4 mb-10 relative z-10">
-				<div class="h-px w-12 bg-teal-600"></div>
-				<span class="text-teal-800 bg-white px-2 text-xs font-black uppercase tracking-[0.4em]">About Us</span>
-				<div class="h-px w-12 bg-teal-600"></div>
-			</div>
+        <!-- INITIAL TEXT -->
+        <div class="absolute flex flex-col items-center text-center px-6"
+             style="opacity: {1 - textFadeProgress}; transform: translateY({textFadeProgress * -30}px); pointer-events: {textFadeProgress > 0 ? 'none' : 'auto'};">
+            <h2 class="text-4xl md:text-6xl font-bold text-zinc-950 tracking-tighter max-w-4xl leading-tight">
+                Our buildings set up our tenants for long-term success.
+            </h2>
+        </div>
 
-			<h2 use:reveal class="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.1] mb-10 text-zinc-950">
-				<span class="block md:inline whitespace-nowrap">Operating high demand</span>
-				<span class="text-transparent webkit-text-stroke-dark inline-block">real estate</span><br/>
-				and treating our tenants <span class="text-teal-600 italic font-light inline-block">like family.</span>
-			</h2>
-			
-			<p use:reveal class="text-lg md:text-xl text-zinc-600 font-medium leading-relaxed max-w-2xl mb-12">
-				At Jax Street CRE, we start with our tenants and work our way backwards. This means that our buildings must setup our tenants for long-term success. We believe that charging our tenants a rent that makes sense and operating our buildings to a high standard is the goal.
-			</p>
-			
-			<a use:reveal href="/about" class="group flex items-center gap-4 bg-zinc-950 text-white border-2 border-zinc-950 px-10 py-5 rounded-sm hover:bg-teal-600 hover:border-teal-600 transition-all duration-300 shadow-xl hover:shadow-teal-500/20 z-10">
-				<span class="text-xs font-bold uppercase tracking-[0.2em]">Discover Our Story</span>
-				<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-			</a>
-		</div>
-	</section>
+        <!-- THE CARDS -->
+        <div class="relative z-10 w-full max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 pointer-events-none"
+             style="transform: translateY({(revealProgress * -15)}vh);">
+
+            <!-- Left Card -->
+            <div class="aspect-[4/3] md:aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-zinc-100 border border-zinc-200 will-change-transform"
+                 style="transform: translate({(1 - snapProgress) * -30}vw, {(1 - snapProgress) * 30}vh) rotate({(1 - snapProgress) * -25}deg) scale({0.8 + (snapProgress * 0.2)}); opacity: {0.3 + (snapProgress * 0.7)};">
+                 {#if properties[0]}<img src={properties[0].image} alt="" class="w-full h-full object-cover" style="filter: grayscale({(1 - snapProgress) * 100}%);" />{/if}
+            </div>
+
+            <!-- Center Card -->
+            <div class="hidden md:block aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-zinc-100 border border-zinc-200 will-change-transform"
+                 style="transform: translate(0px, {(1 - snapProgress) * 40}vh) rotate({(1 - snapProgress) * 15}deg) scale({1.1 - (snapProgress * 0.1)}); opacity: {0.3 + (snapProgress * 0.7)};">
+                 {#if properties[1]}<img src={properties[1].image} alt="" class="w-full h-full object-cover" style="filter: grayscale({(1 - snapProgress) * 100}%);" />{/if}
+            </div>
+
+            <!-- Right Card -->
+            <div class="hidden md:block aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-zinc-100 border border-zinc-200 will-change-transform"
+                 style="transform: translate({(1 - snapProgress) * 30}vw, {(1 - snapProgress) * 20}vh) rotate({(1 - snapProgress) * 20}deg) scale({0.9 + (snapProgress * 0.1)}); opacity: {0.3 + (snapProgress * 0.7)};">
+                 {#if properties[2]}<img src={properties[2].image} alt="" class="w-full h-full object-cover" style="filter: grayscale({(1 - snapProgress) * 100}%);" />{/if}
+            </div>
+
+        </div>
+
+        <!-- REVEALED TEXT & BUTTON -->
+        <div class="absolute bottom-[10%] md:bottom-[15%] max-w-3xl mx-auto flex flex-col items-center text-center px-6"
+             style="opacity: {revealProgress}; transform: translateY({30 - (revealProgress * 30)}px); pointer-events: {revealProgress > 0.8 ? 'auto' : 'none'};">
+            
+            <h3 class="text-3xl md:text-5xl font-bold text-zinc-950 mb-6 tracking-tighter leading-tight">
+                We operate high demand <span class="text-transparent inline-block" style="-webkit-text-stroke: 1px #09090b;">real estate</span><br/> 
+                and treat our tenants <span class="text-teal-600 italic font-light">like family.</span>
+            </h3>
+            
+            <a href="/about" class="bg-teal-600 hover:bg-teal-700 text-white font-bold uppercase tracking-widest text-xs px-10 py-5 rounded-sm transition-all shadow-xl hover:shadow-teal-600/20 group flex items-center gap-3">
+                Discover Our Story
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
+
+    </div>
+</section>
 
 </div>
 

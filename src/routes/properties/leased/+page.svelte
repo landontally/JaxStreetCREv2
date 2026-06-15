@@ -6,13 +6,12 @@
     let properties = data.properties || [];
 
     let activeLocation = $state(null);
+    let hoveredLocation = $state(null); // Added hover state
     let isMobileMapOpen = $state(false);
 
-    // --- SORT & FILTER STATE ---
     let sortBy = $state('addressAsc'); 
     let filterCity = $state('All');
 
-    // --- NEW: SVELTEKIT SNAPSHOT FOR SCROLL MEMORY ---
     let listContainer = $state<HTMLElement>();
 
     export const snapshot = {
@@ -32,7 +31,6 @@
         }
     };
 
-    // Safely extract cities by filtering out any properties missing a location first!
     let availableCities = $derived(
         ['All', ...new Set(properties
             .filter((p: any) => p.location) 
@@ -40,16 +38,13 @@
         )].sort()
     );
 
-    // Dynamically rebuild the list instantly whenever a dropdown changes
     let displayProperties = $derived.by(() => {
         let result = [...properties];
 
-        // 1. Apply City Filter (Safely)
         if (filterCity !== 'All') {
             result = result.filter(p => p.location && p.location.split(',')[0].trim() === filterCity);
         }
 
-        // 2. Apply Sorting (Safely handling any missing titles or dates)
         result.sort((a, b) => {
             if (sortBy === 'newest') {
                 return new Date(b._createdAt || 0).getTime() - new Date(a._createdAt || 0).getTime();
@@ -134,12 +129,16 @@
 
             {#if displayProperties.length > 0}
                 {#each displayProperties as property}
-                    <div class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg">
-                        
+                    <div 
+                        class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg"
+                        onmouseenter={() => hoveredLocation = property}
+                        onmouseleave={() => hoveredLocation = null}
+                    >
                         <div class="w-2/5 md:w-1/3 min-h-[160px] h-full relative overflow-hidden bg-zinc-100 shrink-0">
                             <img 
                                 src={property.image} 
                                 alt={property.title}
+                                loading="lazy"
                                 class="absolute inset-0 w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                             />
                         </div>
@@ -195,7 +194,8 @@
             {#key filterCity}
             <InteractiveMap 
                 properties={displayProperties} 
-                activeLocation={activeLocation} 
+                activeLocation={activeLocation}
+                hoveredLocation={hoveredLocation}
             />
             {/key}
         </div>
@@ -228,7 +228,11 @@
             
             <div class="flex-grow relative z-0">
                 {#key filterCity}
-                <InteractiveMap properties={displayProperties} activeLocation={activeLocation} />
+                <InteractiveMap 
+                    properties={displayProperties} 
+                    activeLocation={activeLocation}
+                    hoveredLocation={hoveredLocation}
+                />
                 {/key}
             </div>
         </div>
