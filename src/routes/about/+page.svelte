@@ -84,7 +84,7 @@
 		{
 			name: 'Landon Tally',
 			role: 'Digital Strategist & Development',
-			bio: 'Bridging the gap with his technological precision, Landon ensures Jax Street stays at the absolute forefront of the industry. Having graduated in 2015 with a BSc in Computer Engineering Technology, Landon has dabbled in various aspects of the tech world, ranging from robotics to software development and wesite design. Wtih an insatiable thirst for knowledge, Landon is always learning and applying new technologies to keep Jax Street ahead of the curve.',
+			bio: 'Bridging the gap with his technological precision, Landon ensures Jax Street stays at the absolute forefront of the industry. Having graduated in 2015 with a BSc in Computer Engineering Technology, Landon has dabbled in various aspects of the tech world, ranging from robotics to software development and website design. Wtih an insatiable thirst for knowledge, Landon is always learning and applying new technologies to keep Jax Street ahead of the curve.',
 			// Make sure 'landon2.jpg' is exactly what you named the file in your static folder
 			image: '/landon2.jpg' 
 		}
