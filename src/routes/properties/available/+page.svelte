@@ -1,6 +1,7 @@
 <script lang="ts">
     import { fly } from 'svelte/transition';
     import InteractiveMap from '$lib/components/InteractiveMap.svelte';
+    import { tilt } from '$lib/tilt';
 
     let { data } = $props();
     let properties = data.properties;
@@ -119,11 +120,12 @@
 
     <div class="flex flex-col lg:flex-row flex-grow h-[800px] max-h-[75vh]">
         
-        <div bind:this={listContainer} class="w-full lg:w-[450px] xl:w-[500px] h-full overflow-y-auto bg-white p-4 md:p-6 flex flex-col gap-4 custom-scrollbar shrink-0 relative z-10">            
+        <div bind:this={listContainer} data-lenis-prevent="" class="w-full lg:w-[450px] xl:w-[500px] h-full overflow-y-auto bg-white p-4 md:p-6 flex flex-col gap-4 custom-scrollbar shrink-0 relative z-10">            
             {#if displayProperties.length > 0}
                 {#each displayProperties as property}
                     <div 
-                        class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-lg"
+                        class="group flex shrink-0 h-auto bg-white border border-zinc-200 hover:border-teal-500/50 rounded-sm overflow-hidden transition-shadow duration-300 shadow-sm hover:shadow-2xl"
+                        use:tilt
                         onmouseenter={() => hoveredLocation = property}
                         onmouseleave={() => hoveredLocation = null}
                     >

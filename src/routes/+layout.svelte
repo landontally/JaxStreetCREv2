@@ -11,6 +11,7 @@
   // 1. New imports for Lenis smooth scrolling
   import { onMount } from 'svelte';
   import Lenis from 'lenis';
+  import { page } from '$app/stores';
 
   let { children } = $props();
   let scrollY = $state(0);
@@ -52,6 +53,7 @@
 
 <svelte:head>
   <link rel="icon" href={favicon} />
+  <link rel="canonical" href="https://jaxstreetcre.com{$page.url.pathname}" />
   <script type="application/ld+json">
     {JSON.stringify({
       "@context": "https://schema.org",

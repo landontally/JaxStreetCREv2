@@ -352,7 +352,7 @@
         </div>
 
         <!-- REVEALED TEXT & BUTTON -->
-        <div class="absolute bottom-[10%] md:bottom-[15%] max-w-3xl mx-auto flex flex-col items-center text-center px-6"
+        <div class="z-20 absolute bottom-[10%] md:bottom-[15%] max-w-3xl mx-auto flex flex-col items-center text-center px-6"
              style="opacity: {revealProgress}; transform: translateY({30 - (revealProgress * 30)}px); pointer-events: {revealProgress > 0.8 ? 'auto' : 'none'};">
             
             <h3 class="text-3xl md:text-5xl font-bold text-zinc-950 mb-6 tracking-tighter leading-tight">

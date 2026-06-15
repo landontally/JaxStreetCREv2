@@ -130,7 +130,7 @@
 			<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-tight" in:fly={{ y: 30, duration: 1000, delay: 400 }}>
 				We are driven by <br/>
 				the pursuit of <br/>
-				<span class="relative inline-block h-[1.3em] overflow-hidden align-bottom min-w-[300px] md:min-w-[500px]">
+				<span class="relative inline-block h-[1.3em] overflow-hidden align-bottom min-w-[300px] md:min-w-[650px]">
 					{#key currentWordIndex}
 						<span 
 							class="absolute top-0 left-0 text-teal-400 pr-4 pb-4"
