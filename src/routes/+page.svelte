@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
+	import { magnetic } from '$lib/magnetic';
 
 	let { data } = $props();
 	let properties = data?.properties || [];
@@ -359,10 +360,10 @@
                 and treat our tenants <span class="text-teal-600 italic font-light">like family.</span>
             </h3>
             
-            <a href="/about" class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 bg-teal-600 hover:bg-teal-700 text-white font-bold uppercase tracking-widest text-xs px-10 py-5 rounded-sm transition-all shadow-xl hover:shadow-teal-600/20 group flex items-center gap-3">
-                Discover Our Story
-                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </a>
+			<a href="/about" use:magnetic class="transition-transform duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 bg-teal-600 hover:bg-teal-700 text-white font-bold uppercase tracking-widest text-xs px-10 py-5 rounded-sm shadow-xl hover:shadow-teal-600/20 group flex items-center gap-3">
+				Discover Our Story
+				<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+			</a>
         </div>
 
     </div>

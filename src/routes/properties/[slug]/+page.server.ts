@@ -27,6 +27,7 @@ export async function load({ params }) {
         tenants, 
         "brochureUrl": brochure.asset->url, 
         mainImage, 
+        "lqip": mainImage.asset->metadata.lqip,
         gallery, 
         coordinates, 
         surroundingArea

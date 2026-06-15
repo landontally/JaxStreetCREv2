@@ -126,11 +126,15 @@
 {#key property.title}
 
 	<section class="relative h-[70vh] flex flex-col justify-end px-6 md:px-12 pb-24 z-10 overflow-hidden bg-zinc-950">
-		<div class="absolute inset-0 z-0 bg-zinc-950">
+		<div class="absolute inset-0 z-0 bg-zinc-950 bg-cover bg-center bg-fixed" style="background-image: url('{property.lqip}');">
+			
+			<div class="absolute inset-0 backdrop-blur-xl"></div>
+			
 			<div 
 				class="absolute inset-0 bg-cover bg-center bg-fixed opacity-90"
 				style="background-image: url('{property.image}');"
 			></div>
+			
 			<div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/30 to-transparent"></div>
 		</div>
 

@@ -6,10 +6,14 @@
   import Footer from '$lib/components/Footer.svelte';
   
   import { onNavigate } from '$app/navigation';
-  import { fade } from 'svelte/transition'; // <-- 1. Import fade for the button
+  import { fade } from 'svelte/transition';
+  
+  // 1. New imports for Lenis smooth scrolling
+  import { onMount } from 'svelte';
+  import Lenis from 'lenis';
 
   let { children } = $props();
-  let scrollY = $state(0); // <-- 2. Track the user's scroll position
+  let scrollY = $state(0);
 
   // Trigger the Native Browser View Transitions for a butter-smooth crossfade!
   onNavigate((navigation) => {
@@ -22,6 +26,28 @@
       });
     });
   });
+
+  // 2. Initialize Lenis when the layout mounts
+  onMount(() => {
+    const lenis = new Lenis({
+      duration: 1.2, // Smoothness duration
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Premium easing curve
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy(); // Clean up if the component unmounts
+    };
+  });
+  
 </script>
 
 <svelte:head>
@@ -63,7 +89,7 @@
     <button
       transition:fade={{ duration: 200 }}
       onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      class="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[90] bg-teal-600/90 hover:bg-teal-500 text-white p-3 md:p-4 rounded-full shadow-2xl backdrop-blur-sm transition-all hover:-translate-y-1"
+      class="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[90] bg-teal-600/90 hover:bg-teal-500 text-white p-3 md:p-4 rounded-full shadow-2xl backdrop-blur-sm transition-all hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
       aria-label="Back to top"
     >
       <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"></path></svg>
