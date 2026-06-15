@@ -39,10 +39,7 @@
 
     <div class="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest font-bold text-zinc-600">
       <p>&copy; {new Date().getFullYear()} Jax Street CRE. All rights reserved.</p>
-      <div class="flex gap-6">
-        <a href="#privacy" class="hover:text-zinc-400 transition-colors">Privacy</a>
-        <a href="#terms" class="hover:text-zinc-400 transition-colors">Terms</a>
-      </div>
+
     </div>
   </div>
 </footer>
