@@ -11,7 +11,7 @@ export default defineType({
       type: 'string',
       description: 'Internal identifier for the studio.',
       initialValue: 'Homepage Settings',
-      readOnly: true, // Prevents Eric from accidentally changing the title
+      readOnly: true, 
     }),
     defineField({
       name: 'heroImages',

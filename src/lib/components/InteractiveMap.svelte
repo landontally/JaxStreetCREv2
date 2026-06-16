@@ -25,7 +25,6 @@
         maxZoom: 20
       }).addTo(m);
 
-// +++ NEW: ADD INDIANA OUTLINE +++
         if (mapVariant === 'propose') {
           fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
             .then(res => res.json())
@@ -70,7 +69,6 @@
 
     let featureGroupArray: any[] = [];
 
-// --- INITIALIZE THE CLUSTER GROUP ---
     const clusterGroup = L.markerClusterGroup({
       showCoverageOnHover: false,
       maxClusterRadius: 50, 
@@ -137,7 +135,6 @@
       });
     }
 
-    // Add the fully loaded cluster group to the map
     m.addLayer(clusterGroup);
     markerClusterGroup = clusterGroup;
 
@@ -175,10 +172,8 @@
           const targetMarker = markers[identifier];
 
           if (targetMarker) {
-            // 1. First, perform the beautiful swoop
             map.flyTo([lat, lng], 17, { animate: true, duration: 1.5 });
             
-            // 2. Wait for the camera to land, then break the cluster and open the popup!
             map.once('moveend', () => {
               markerClusterGroup.zoomToShowLayer(targetMarker, () => {
                 targetMarker.openPopup();

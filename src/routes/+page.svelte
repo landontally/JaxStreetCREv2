@@ -25,11 +25,8 @@
 
 	let textFadeProgress = $derived(Math.min(aboutProgress / 0.3, 1));
 	
-	// Phase 2 (0.1 to 0.7): The Raw linear progress of the snap
 	let rawSnap = $derived(Math.max(0, Math.min((aboutProgress - 0.1) / 0.6, 1))); 
 	let snapProgress = $derived(1 - Math.pow(1 - rawSnap, 3)); 
-	
-	// Phase 3 (0.5 to 1.0): New text reveals slightly earlier
 	let revealProgress = $derived(Math.max(0, Math.min((aboutProgress - 0.5) / 0.5, 1)));
 
 	// --- MOUSE TRACKING FOR GRID ---
@@ -98,7 +95,6 @@
 		(e.target as HTMLElement).releasePointerCapture(e.pointerId);
 	}
 
-	// --- CUSTOM REVEAL ACTION ---
 	function reveal(node: HTMLElement) {
 		node.classList.add('opacity-0', 'translate-y-16', 'transition-all', 'duration-[1200ms]', 'ease-out');
 		const observer = new IntersectionObserver((entries) => {

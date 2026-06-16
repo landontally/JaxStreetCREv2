@@ -127,7 +127,6 @@ export default defineType({
       fields: [
         { name: 'trafficCount', type: 'string', title: 'Vehicles Per Day (VPD)' },
         { name: 'medianIncome', type: 'string', title: 'Median Household Income' },
-        // --- NEW FIELDS ---
         { name: 'totalPopulation', type: 'string', title: 'Total Population (Zip/City)' },
         { name: 'totalHouseholds', type: 'string', title: 'Total Households' },
         { name: 'medianAge', type: 'string', title: 'Median Age' }

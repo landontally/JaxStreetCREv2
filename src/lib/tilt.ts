@@ -4,7 +4,6 @@ export function tilt(node: HTMLElement) {
         const x = (e.clientX - left) / width;
         const y = (e.clientY - top) / height;
         
-        // Adjust the multiplier to make the tilt more or less extreme
         const multiplier = 10; 
         const rotateX = (0.5 - y) * multiplier;
         const rotateY = (x - 0.5) * multiplier;

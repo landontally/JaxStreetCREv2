@@ -8,7 +8,6 @@
   import { onNavigate } from '$app/navigation';
   import { fade } from 'svelte/transition';
   
-  // 1. New imports for Lenis smooth scrolling
   import { onMount } from 'svelte';
   import Lenis from 'lenis';
   import { page } from '$app/stores';
@@ -27,7 +26,6 @@
     });
   });
 
-  // 2. Initialize Lenis when the layout mounts
   onMount(() => {
     const lenis = new Lenis({
       duration: 1.2, 

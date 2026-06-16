@@ -1,13 +1,11 @@
 import { client } from '$lib/sanity';
 
 export async function GET() {
-    // 1. Fetch all current property slugs and their last updated date from Sanity
     const query = `*[_type == "property"]{ "slug": slug.current, _updatedAt }`;
     const properties = await client.fetch(query);
 
     const website = 'https://jaxstreetcre.com';
 
-    // 2. Build the XML string dynamically
     const sitemap = `<?xml version="1.0" encoding="UTF-8" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
@@ -35,7 +33,6 @@ export async function GET() {
     `).join('')}
 </urlset>`;
 
-    // 3. Return it as an official XML Response
     return new Response(sitemap, {
         headers: {
             'Content-Type': 'application/xml',

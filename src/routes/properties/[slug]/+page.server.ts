@@ -13,7 +13,6 @@ function getDistanceInMiles(lat1: number, lon1: number, lat2: number, lon2: numb
 }
 
 export async function load({ params }) {
-// 1. Fetch the Target Property
   const query = `
       *[_type == "property" && slug.current == $slug][0] {
         title, 
@@ -37,10 +36,8 @@ export async function load({ params }) {
 
   if (!rawProperty) throw error(404, { message: 'Property not found' });
 
-  // 2. DEFENSIVE STATUS CHECK
   const currentStatus = rawProperty.status || '';
   
-  // Safely check if it is Leased, otherwise match the exact status (e.g. Available)
   const statusFilter = currentStatus.toLowerCase().includes('leased')
       ? '(status == "Leased" || status == "100% Leased" || status == "leased")' 
       : `status == "${currentStatus}"`;
@@ -52,7 +49,6 @@ export async function load({ params }) {
   `;
   const rawRecommendations = await client.fetch(recQuery, { slug: params.slug });
 
-  // 3. Sort recommendations by Geographic Distance
   const targetLat = rawProperty.coordinates?.lat;
   const targetLng = rawProperty.coordinates?.lng;
 
@@ -65,7 +61,6 @@ export async function load({ params }) {
       };
   });
 
-  // Sort by closest distance, then slice the top 3
   recommendations = recommendations.sort((a: any, b: any) => a.distance - b.distance).slice(0, 3);
 
   const property = {

@@ -2,7 +2,6 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
-/* 1. Load the font files first */
 @font-face {
     font-family: 'Lato';
     src: url('/fonts/lato-regular.woff2') format('woff2');
@@ -27,12 +26,10 @@
     font-display: swap;
 }
 
-/* 2. Tell Tailwind to use them as the default */
 @theme {
   --font-sans: "Lato", sans-serif;
 }
 
-/* 3. Apply your base body styles */
 @layer base {
   body {
     @apply bg-zinc-950 text-zinc-50 antialiased selection:bg-teal-500 selection:text-white;
