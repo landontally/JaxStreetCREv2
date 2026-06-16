@@ -22,7 +22,6 @@ export async function load({ setHeaders }) {
 
   const rawProperties = await client.fetch(query);
 
-  // Map through the properties and generate the optimized URLs
   const properties = (rawProperties || []).map((prop: any) => ({
     ...prop,
     image: prop.mainImage 

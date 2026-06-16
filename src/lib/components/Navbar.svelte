@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
   import { page } from '$app/stores';
-  import InteractiveMap from '$lib/components/InteractiveMap.svelte'; // <-- Add this import
+  import InteractiveMap from '$lib/components/InteractiveMap.svelte';
 
   let scrollY = $state(0);
   let isDrawerOpen = $state(false);
@@ -25,7 +25,6 @@
       });
   });
 
-  // Lock scrolling if ANY overlay is open
   $effect(() => {
     if (isDrawerOpen || isMobileMenuOpen || isSearchOpen) {
       document.body.style.overflow = 'hidden';
@@ -226,7 +225,6 @@
 {/if}
 
 <style>
-  /* Light mode scrollbar for the textarea, drawer body, and search results */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
@@ -234,10 +232,10 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #e4e4e7; /* zinc-200 */
+    background: #e4e4e7; 
     border-radius: 4px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #14b8a6; /* teal-500 */
+    background: #14b8a6; 
   }
 </style>

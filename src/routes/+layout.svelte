@@ -16,7 +16,6 @@
   let { children } = $props();
   let scrollY = $state(0);
 
-  // Trigger the Native Browser View Transitions for a butter-smooth crossfade!
   onNavigate((navigation) => {
     if (!document.startViewTransition) return;
 
@@ -31,8 +30,8 @@
   // 2. Initialize Lenis when the layout mounts
   onMount(() => {
     const lenis = new Lenis({
-      duration: 1.2, // Smoothness duration
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Premium easing curve
+      duration: 1.2, 
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
@@ -45,7 +44,7 @@
     requestAnimationFrame(raf);
 
     return () => {
-      lenis.destroy(); // Clean up if the component unmounts
+      lenis.destroy();
     };
   });
   

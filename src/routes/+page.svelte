@@ -7,17 +7,15 @@
 	let properties = data?.properties || [];
 	let heroImages = data?.heroImages || [];
 
-	// --- Add these variables inside your <script> tag ---
 	let scrollY = $state(0);
 	let innerHeight = $state(0);
-	// --- SCATTER TO GRID ANIMATION MATH (SNAPPY VERSION) ---
+	// --- SCATTER TO GRID ANIMATION MATH ---
 	let aboutSection = $state<HTMLElement>();
 
 	let aboutProgress = $derived.by(() => {
 		if (!aboutSection || !innerHeight) return 0;
 		const start = aboutSection.offsetTop; 
         
-		// ULTRA-COMPRESSED: The animation now finishes in 60% of one screen height
 		const distance = innerHeight * 0.6; 
 		
 		if (scrollY < start) return 0;
@@ -25,14 +23,10 @@
 		return (scrollY - start) / distance;
 	});
 
-	// Phase 1 (0.0 to 0.3): Initial text gets out of the way faster
 	let textFadeProgress = $derived(Math.min(aboutProgress / 0.3, 1));
 	
 	// Phase 2 (0.1 to 0.7): The Raw linear progress of the snap
 	let rawSnap = $derived(Math.max(0, Math.min((aboutProgress - 0.1) / 0.6, 1))); 
-	
-	// THE FRAMER SECRET: "Ease-Out Cubic" Math
-	// This makes the cards fly in super fast, then gently magnetic-snap into place.
 	let snapProgress = $derived(1 - Math.pow(1 - rawSnap, 3)); 
 	
 	// Phase 3 (0.5 to 1.0): New text reveals slightly earlier
@@ -47,7 +41,6 @@
 		mouseY = e.clientY;
 	}
 
-	// --- HERO CAROUSEL LOGIC ---
 	let currentHeroIndex = $state(0);
 	onMount(() => {
 		if (heroImages && heroImages.length > 1) {
@@ -315,11 +308,9 @@
 		{/if}
 	</section>
 
-<!-- SCATTER TO GRID SECTION (LIGHT THEME) -->
 <section bind:this={aboutSection} class="relative bg-white" style="height: 170vh;">
     <div class="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-white border-t border-b border-zinc-200">
 
-        <!-- INITIAL TEXT -->
         <div class="absolute flex flex-col items-center text-center px-6"
              style="opacity: {1 - textFadeProgress}; transform: translateY({textFadeProgress * -30}px); pointer-events: {textFadeProgress > 0 ? 'none' : 'auto'};">
             <h2 class="text-4xl md:text-6xl font-bold text-zinc-950 tracking-tighter max-w-4xl leading-tight">
@@ -327,23 +318,19 @@
             </h2>
         </div>
 
-        <!-- THE CARDS -->
         <div class="relative z-10 w-full max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 pointer-events-none"
              style="transform: translateY({(revealProgress * -15)}vh);">
 
-            <!-- Left Card -->
             <div class="aspect-[4/3] md:aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-zinc-100 border border-zinc-200 will-change-transform"
                  style="transform: translate({(1 - snapProgress) * -30}vw, {(1 - snapProgress) * 30}vh) rotate({(1 - snapProgress) * -25}deg) scale({0.8 + (snapProgress * 0.2)}); opacity: {0.3 + (snapProgress * 0.7)};">
                  {#if properties[0]}<img src={properties[0].image} alt="" class="w-full h-full object-cover" style="filter: grayscale({(1 - snapProgress) * 100}%);" />{/if}
             </div>
 
-            <!-- Center Card -->
             <div class="hidden md:block aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-zinc-100 border border-zinc-200 will-change-transform"
                  style="transform: translate(0px, {(1 - snapProgress) * 40}vh) rotate({(1 - snapProgress) * 15}deg) scale({1.1 - (snapProgress * 0.1)}); opacity: {0.3 + (snapProgress * 0.7)};">
                  {#if properties[1]}<img src={properties[1].image} alt="" class="w-full h-full object-cover" style="filter: grayscale({(1 - snapProgress) * 100}%);" />{/if}
             </div>
 
-            <!-- Right Card -->
             <div class="hidden md:block aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-zinc-100 border border-zinc-200 will-change-transform"
                  style="transform: translate({(1 - snapProgress) * 30}vw, {(1 - snapProgress) * 20}vh) rotate({(1 - snapProgress) * 20}deg) scale({0.9 + (snapProgress * 0.1)}); opacity: {0.3 + (snapProgress * 0.7)};">
                  {#if properties[2]}<img src={properties[2].image} alt="" class="w-full h-full object-cover" style="filter: grayscale({(1 - snapProgress) * 100}%);" />{/if}
@@ -351,7 +338,6 @@
 
         </div>
 
-        <!-- REVEALED TEXT & BUTTON -->
         <div class="z-20 absolute bottom-[10%] md:bottom-[15%] max-w-3xl mx-auto flex flex-col items-center text-center px-6"
              style="opacity: {revealProgress}; transform: translateY({30 - (revealProgress * 30)}px); pointer-events: {revealProgress > 0.8 ? 'auto' : 'none'};">
             
@@ -372,20 +358,18 @@
 </div>
 
 <style>
-	/* Custom class for outline text on dark backgrounds */
 	.webkit-text-stroke {
-		-webkit-text-stroke: 2px #f4f4f5; /* zinc-100 */
+		-webkit-text-stroke: 2px #f4f4f5; 
 		color: transparent;
 	}
 
-	/* Custom class for outline text on white backgrounds */
 	.webkit-text-stroke-dark {
-		-webkit-text-stroke: 2px #09090b; /* zinc-950 */
+		-webkit-text-stroke: 2px #09090b;
 		color: transparent;
 	}
 
 	.webkit-text-stroke-light {
-		-webkit-text-stroke: 2px #e4e4e7; /* zinc-200 */
+		-webkit-text-stroke: 2px #e4e4e7; 
 		color: transparent;
 	}
 

@@ -3,7 +3,6 @@
   import 'leaflet/dist/leaflet.css';
   import 'leaflet.markercluster/dist/MarkerCluster.css';
 
-  // ADD mapVariant to your destructured props with a default value
   let { propertyCoords, surroundingArea = [], directoryProperties = [], properties = [], activeLocation, hoveredLocation = null, propertyTitle, mapVariant = 'default' } = $props();
   let mapElement: HTMLElement;
   let map = $state<any>(null);
@@ -11,13 +10,9 @@
   let L: any;
   let defaultBounds = $state<any>(null);
   
-  // Save the cluster group to state so the flight animation can use it
   let markerClusterGroup = $state<any>(null); 
 
   onMount(() => {
-    // Wrap the heavy map generation in a tiny 50ms delay.
-    // This allows Svelte to instantly render the page transition, 
-    // and THEN build the map behind the scenes!
     const timer = setTimeout(async () => {
       L = (await import('leaflet')).default;
       await import('leaflet.markercluster'); 
@@ -32,11 +27,9 @@
 
 // +++ NEW: ADD INDIANA OUTLINE +++
         if (mapVariant === 'propose') {
-          // Fetch all US states from a highly reliable public API
           fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
             .then(res => res.json())
             .then(data => {
-              // Filter the data to only include Indiana
               const indianaGeoJSON = {
                 type: 'FeatureCollection',
                 features: data.features.filter((f: any) => f.properties.name === 'Indiana')
@@ -44,12 +37,12 @@
 
               L.geoJSON(indianaGeoJSON, {
                 style: {
-                  color: '#09090b', // matches your zinc-950
-                  weight: 3,        // bold outline
-                  fillColor: '#14b8a6', // matches your teal-500
+                  color: '#09090b', 
+                  weight: 3,        
+                  fillColor: '#14b8a6', 
                   fillOpacity: 0.05
                 },
-                interactive: false // ensures the outline doesn't block clicks on your pins
+                interactive: false 
               }).addTo(m);
             })
             .catch(err => console.error("Could not load Indiana boundary", err));
@@ -102,7 +95,6 @@
       dirProps.forEach((prop: any) => {
         if (prop.coordinates?.lat && prop.coordinates?.lng) {
           
-          // The link now generates for ALL map variants, making it highly accessible!
           let linkHtml = prop.slug
             ? `<a href="/properties/${prop.slug}" class="mt-2 pt-2 border-t border-zinc-100 text-xs font-bold text-teal-600 hover:text-teal-700 block">View Property Details &rarr;</a>`
             : '';
@@ -145,13 +137,12 @@
       });
     }
 
-    // Add the fully loaded cluster group to the map!
+    // Add the fully loaded cluster group to the map
     m.addLayer(clusterGroup);
     markerClusterGroup = clusterGroup;
 
     // +++ MAP CENTERING +++
     if (mapVariant === 'propose') {
-      // Zoom level changed to 6 so Indiana fits perfectly in the drawer
       m.setView([39.7684, -86.1581], 6);
     } else if (featureGroupArray.length > 0) {
       const group = L.featureGroup(featureGroupArray);
@@ -164,9 +155,8 @@
     setTimeout(() => { m.invalidateSize(); }, 100);
         map = m;
 
-    }, 50); // <-- The 50ms delay
+    }, 50); 
 
-    // Ensure we clean up the timer and the map if the user leaves the page too fast
     return () => { 
       clearTimeout(timer);
       if (map) map.remove(); 
@@ -250,7 +240,7 @@
           if (dot) {
             dot.classList.remove('bg-teal-500');
             dot.classList.add('scale-[1.6]', 'bg-teal-400');
-            targetMarker.setZIndexOffset(1000); // Bring it to the front
+            targetMarker.setZIndexOffset(1000);
           }
         }
       }

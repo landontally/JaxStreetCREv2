@@ -78,14 +78,12 @@
 			name: 'Eric Kamen, MBA',
 			role: 'Founder & Principal (RE License #RB14050427)',
 			bio: "Eric's real estate career technically began upon graduating college in 2015, though, he has been around the business his entire life. Eric has gained insights, market knowledge, and valuable experience over the past eight years in the commercial real estate field, and he strives to continuously learn all facets of the business. Eric graduated from Indiana University’s Kelley School of Business and continued his educational journey by receiving an MBA through the Kelley School of Business in 2022.",
-			// Make sure 'eric2.jpg' is exactly what you named the file in your static folder
 			image: '/eric2.jpg' 
 		},
 		{
 			name: 'Landon Tally',
 			role: 'Digital Strategist & Development',
 			bio: 'Bridging the gap with his technological precision, Landon ensures Jax Street stays at the absolute forefront of the industry. Having graduated in 2015 with a BSc in Computer Engineering Technology, Landon has dabbled in various aspects of the tech world, ranging from robotics to software development and website design. Wtih an insatiable thirst for knowledge, Landon is always learning and applying new technologies to keep Jax Street ahead of the curve.',
-			// Make sure 'landon2.jpg' is exactly what you named the file in your static folder
 			image: '/landon2.jpg' 
 		}
 	];
@@ -122,7 +120,6 @@
 		<div class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col">
 			<div class="flex items-center gap-4 mb-8 justify-center">
 				<div class="w-12 h-px bg-teal-400/50"></div>
-				<!-- Brightened to teal-300 and added a drop-shadow for contrast -->
 				<span class="text-teal-300 font-black tracking-[0.4em] text-xs uppercase drop-shadow-md">Est. 2025</span>
 				<div class="w-12 h-px bg-teal-400/50"></div>
 			</div>

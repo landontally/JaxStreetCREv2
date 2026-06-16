@@ -310,6 +310,9 @@
 						</div>
 					{/if}
 				</div>
+				<p class="text-xs text-zinc-500 text-center mt-8 font-light tracking-wide">
+    				**This information was obtained from <a href="https://censusreporter.org" target="_blank" rel="noopener noreferrer" class="text-teal-500 hover:text-teal-400 underline decoration-teal-500/30 underline-offset-2">CensusReporter.org</a> and INDOT TCDS
+				</p>
 			</div>
 		</section>
 	{/if}

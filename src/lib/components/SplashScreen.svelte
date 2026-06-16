@@ -3,7 +3,6 @@
   import { page } from '$app/stores';
 
   let isHome = $derived($page.url.pathname === '/');
-  // Default to true so it loads seamlessly on the server!
   let show = $state(true); 
   
   const spins = Array.from({ length: 7 }, (_, i) => i);
@@ -47,7 +46,6 @@
 <style>
   @media (prefers-reduced-motion: no-preference) {
     .animate-slot-up {
-      /* Added webkit and will-change to force mobile GPU rendering */
       -webkit-animation: slotUp 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       animation: slotUp 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       will-change: transform;

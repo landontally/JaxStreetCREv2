@@ -39,7 +39,6 @@ export async function GET() {
     return new Response(sitemap, {
         headers: {
             'Content-Type': 'application/xml',
-            // Cache it for an hour so we don't spam Sanity with API calls
             'Cache-Control': 'max-age=0, s-maxage=3600'
         }
     });
