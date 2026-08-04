@@ -126,6 +126,7 @@
 		<meta property="og:image" content="/logo-white.svg" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:image" content="/logo-white.svg" />
+		<link rel="preload" as="image" href={heroImages[0]} fetchpriority="high" />
 	{/if}
 </svelte:head>
 
