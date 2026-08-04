@@ -2,13 +2,9 @@
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 
-	// Pull in the data from the +page.server.ts file
 	let { data } = $props();
 	
-	// Use the image from Sanity, or fallback to the Unsplash URL if Sanity is empty
 	let heroImage = data?.aboutPage?.heroImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070';
-
-	// --- Mouse Tracking for the Global Grid ---
 	let mouseX = $state(0);
 	let mouseY = $state(0);
 
@@ -17,11 +13,9 @@
 		mouseY = event.clientY;
 	}
 
-	// --- Rotating Words Logic ---
 	const rotatingWords = ['excellence.', 'perfection.', 'partnerships.', 'growth.'];
 	let currentWordIndex = $state(0);
 
-	// --- Scroll Scrubbing Logic ---
 	let textSection = $state<HTMLElement>();
 	let revealProgress = $state(0); // 0 to 1
 
@@ -29,7 +23,6 @@
 	let p2 = $derived(Math.min(Math.max((revealProgress - 0.33) * 3, 0), 1) * 100);
 	let p3 = $derived(Math.min(Math.max((revealProgress - 0.66) * 3, 0), 1) * 100);
 
-	// --- Custom Reveal Action ---
 	function reveal(node: HTMLElement) {
 		node.classList.add('opacity-0', 'translate-y-16', 'transition-all', 'duration-[1200ms]', 'ease-out');
 		const observer = new IntersectionObserver((entries) => {
@@ -72,7 +65,6 @@
 		};
 	});
 
-	// --- TEAM ARRAY (Updated to use local static images) ---
 	const team = [
 		{
 			name: 'Eric Kamen, MBA',
