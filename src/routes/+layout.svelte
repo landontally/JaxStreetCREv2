@@ -51,25 +51,24 @@
 <svelte:head>
   <link rel="icon" href={favicon} />
   <link rel="canonical" href="https://jaxstreetcre.com{$page.url.pathname}" />
-  <script type="application/ld+json">
-    {@html JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "RealEstateAgent",
-      "name": "Jax Street CRE",
-      "image": "https://jaxstreetcre.com/logo-white.svg",
-      "url": "https://jaxstreetcre.com",
-      "telephone": "(812) 345-1663",
-      "email": "eric@jaxstreetcre.com",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Bloomington",
-        "addressRegion": "IN",
-        "addressCountry": "US"
-      },
-      "areaServed": "Indiana",
-      "priceRange": "$$"
-    })}
-  </script>
+  
+  {@html `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Jax Street CRE",
+    "image": "https://jaxstreetcre.com/logo-white.svg",
+    "url": "https://jaxstreetcre.com",
+    "telephone": "(812) 345-1663",
+    "email": "eric@jaxstreetcre.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bloomington",
+      "addressRegion": "IN",
+      "addressCountry": "US"
+    },
+    "areaServed": "Indiana",
+    "priceRange": "$$"
+  })}</script>`}
 </svelte:head>
 
 <svelte:window bind:scrollY />
