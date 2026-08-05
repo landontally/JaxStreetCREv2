@@ -107,7 +107,7 @@
 	{/if}
 
 	<script type="application/ld+json">
-		{html JSON.stringify({
+		{@html JSON.stringify({
 			"@context": "https://schema.org",
 			"@type": "RealEstateListing",
 			"name": property.title || "Commercial Property",
