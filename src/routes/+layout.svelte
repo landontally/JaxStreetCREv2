@@ -52,7 +52,7 @@
   <link rel="icon" href={favicon} />
   <link rel="canonical" href="https://jaxstreetcre.com{$page.url.pathname}" />
   <script type="application/ld+json">
-    {JSON.stringify({
+    {html JSON.stringify({
       "@context": "https://schema.org",
       "@type": "RealEstateAgent",
       "name": "Jax Street CRE",
