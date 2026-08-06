@@ -164,11 +164,11 @@
 		
 		<div class="relative z-20 w-full max-w-7xl mx-auto flex flex-col items-start mt-20">
 			
-			<div use:reveal class="w-full flex items-center justify-center gap-4 mb-12">
+			<!-- <div use:reveal class="w-full flex items-center justify-center gap-4 mb-12">
 				<div class="hidden sm:block h-px w-8 md:w-12 bg-teal-500"></div>
 				<span class="text-teal-400 text-[10px] md:text-xs font-black uppercase tracking-[0.4em] drop-shadow-md text-center">Indiana Commercial Real Estate</span>
 				<div class="hidden sm:block h-px w-8 md:w-12 bg-teal-500"></div>
-			</div>
+			</div> -->
 
 			<h1 class="text-4xl md:text-6xl lg:text-[7rem] font-bold tracking-tighter leading-[0.9] uppercase mb-8">
 				<span use:reveal class="block text-white">Structure.</span>
