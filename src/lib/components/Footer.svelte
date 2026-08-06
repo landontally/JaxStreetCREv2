@@ -13,7 +13,7 @@
           <span class="text-xl font-bold tracking-widest uppercase text-white">Jax Street CRE</span>
         </a>
         <p class="text-zinc-400 text-sm leading-relaxed max-w-sm">
-          Hands-on property owners striving for perfection while remaining opportunistic in our growth path. Rooted in Indiana.
+          Hands-on property owners striving for perfection while remaining opportunistic in our growth path. Rooted in Bloomington,Indiana.
         </p>
       </div>
 
