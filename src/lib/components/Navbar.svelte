@@ -183,7 +183,7 @@
 
     <div class="px-6 py-10 flex-grow overflow-y-auto custom-scrollbar flex flex-col gap-10 bg-white">
       <p class="text-zinc-600 text-sm leading-relaxed font-medium">
-        Whether you have a property to list, or you're looking for your next commercial space, we're here to help. Reach out directly or fill out the form below.
+        Whether you have a property to list, or you're looking for your next commercial space, we're here to help. Reach out directly and send us a call or an email.
       </p>
 
       <div class="flex flex-col gap-6 border-b border-zinc-100 pb-8">
