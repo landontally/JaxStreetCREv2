@@ -110,11 +110,11 @@
 		</div>
 
 		<div class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col">
-			<div class="flex items-center gap-4 mb-8 justify-center">
+<!-- 			<div class="flex items-center gap-4 mb-8 justify-center">
 				<div class="w-12 h-px bg-teal-400/50"></div>
 				<span class="text-teal-300 font-black tracking-[0.4em] text-xs uppercase drop-shadow-md">Est. 2025</span>
 				<div class="w-12 h-px bg-teal-400/50"></div>
-			</div>
+			</div> -->
 			
 			<h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-tight" in:fly={{ y: 30, duration: 1000, delay: 400 }}>
 				We are driven by <br/>
