@@ -13,7 +13,7 @@
           <span class="text-xl font-bold tracking-widest uppercase text-white">Jax Street CRE</span>
         </a>
         <p class="text-zinc-400 text-sm leading-relaxed max-w-sm">
-          Hands-on property owners striving for perfection while remaining opportunistic in our growth path. Rooted in Bloomington,Indiana.
+          Hands-on property owners striving for perfection while remaining opportunistic in our growth path. Rooted in central Indiana.
         </p>
       </div>
 
@@ -30,7 +30,6 @@
       <div class="flex flex-col gap-5">
         <h4 class="text-zinc-50 font-bold uppercase tracking-widest text-xs">Contact</h4>
         <div class="flex flex-col gap-3 text-sm text-zinc-400 font-medium">
-          <p class="flex items-center gap-2">Bloomington, Indiana</p>
           <a href="mailto:eric@jaxstreetcre.com" class="hover:text-teal-400 transition-colors w-fit">eric@jaxstreetcre.com</a>
           <a href="tel:8123451663" class="hover:text-teal-400 transition-colors w-fit">(812) 345-1663</a>
         </div>

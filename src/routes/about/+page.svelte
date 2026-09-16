@@ -160,7 +160,7 @@
 				<div use:reveal class="flex flex-col gap-4">
 					<span class="text-teal-600 font-black uppercase tracking-widest text-xs">Our Strategy</span>
 					<p class="text-zinc-600 font-medium leading-relaxed max-w-md">
-						Although founded in 2025, Jax Street CRE has ties to commercial real estate since 1984. These markets allow us to operate our buildings using our vertically integrated strategy.
+						Although founded in 2024, Jax Street CRE has ties to commercial real estate since 1984. These markets allow us to operate our buildings using our vertically integrated strategy.
 					</p>
 				</div>
 				<div use:reveal class="flex flex-col gap-4">
