@@ -89,7 +89,7 @@
     <div class="w-full border-b border-zinc-800 bg-zinc-950 relative overflow-hidden px-6 md:px-12 pt-32 pb-8 shrink-0">
         <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-                <span class="text-teal-500 text-[10px] font-black uppercase tracking-[0.4em] block mb-2">Past Deals</span>
+                <!-- <span class="text-teal-500 text-[10px] font-black uppercase tracking-[0.4em] block mb-2">Past Deals</span> -->
                 <h1 class="text-3xl md:text-5xl font-bold tracking-tighter uppercase flex flex-col sm:flex-row sm:gap-3 text-white">
                     Leased <span>Properties.</span>
                 </h1>
